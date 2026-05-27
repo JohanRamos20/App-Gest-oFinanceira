@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: npx create-db
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Categoria {
+  LAZER
+  MERCADO
+  DESPESAS
+  COMPRAS
+  COMIDA
+}
+
+enum TipoTransacao {
+  DEBITO
+  CREDITO
+}
+
+model Usuario {
+  id String @id @default(uuid())
+  nome String
+  email String @unique
+  senha_hash String
+  criado_em DateTime @default(now())
+
+  carteira Carteira?
+  metas Metas[]
+}
+
+model Carteira {
+  id String @id @default(uuid())
+  id_usuario String @unique
+  transacao Transacao[]
+  saldo_cache Decimal @default(0)
+
+  usuario Usuario @relation(fields: [id_usuario], references: [id])
+}
+
+model Transacao {
+  id String @id @default(uuid())
+  carteira_id String
+  nome String
+  categoria Categoria
+  valor Decimal
+  tipo_transacao TipoTransacao
+  criado_em DateTime @default(now())
+
+  carteira Carteira @relation(fields: [carteira_id], references: [id])
+  @@index([carteira_id])
+  @@index([criado_em])
+}
+
+model Metas {
+  id String @id @default(uuid())
+  user_id String
+  nome String
+  descricao String
+  valor_total Decimal
+  valor_guardado Decimal @default(0)
+  criado_em DateTime @default(now())
+
+  usuario Usuario @relation(fields: [user_id], references: [id])
+  @@index([user_id])
+}
