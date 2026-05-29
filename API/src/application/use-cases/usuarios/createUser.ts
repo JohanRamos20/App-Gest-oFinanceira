@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Usuario, UsuarioPropriedades } from "../../../domain/entities/usuario";
+import { Usuario } from "../../../domain/entities/usuario";
 import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
 import { CarteiraRepository } from "../../../domain/repository/carteira-repository";
 import { Carteira } from "../../../domain/entities/carteira";
@@ -19,6 +19,10 @@ class CreateUser {
         const usuarioExistente =  await this.usuarioRepository.findByEmail(req.email);
         if(usuarioExistente) {
             throw new Error("Email já cadastrado");
+        }
+
+        if(req.senha.length < 4) {
+            throw new Error("A senha deve conter no mínimo 4 caracteres");
         }
 
         const senhaHash = await bcrypt.hash(req.senha, 10);

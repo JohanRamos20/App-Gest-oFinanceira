@@ -1,8 +1,26 @@
-export const CATEGORIAS = ['Alimentação', 'Transporte', 'Lazer', 'Saúde', 'Educação', 'Outros'] as const;
-export type Categoria = typeof CATEGORIAS[number];
 
-export const TIPOS_TRANSACAO = ['Entrada', 'Saída'] as const;
-export type TipoTransacao = typeof TIPOS_TRANSACAO[number];
+export enum Categorias {
+    LAZER = 'LAZER',
+    MERCADO = 'MERCADO',
+    DESPESAS = 'DESPESAS',
+    COMPRAS = 'COMPRAS',
+    COMIDA = 'COMIDA'
+}
+
+export enum TipoTransacao {
+    DEBITO = 'DEBITO',
+    CREDITO = 'CREDITO'
+}
+
+export function isCategoria(value: unknown): value is Categorias {
+    return Object.values(Categorias).includes(value as Categorias);
+}
+
+export function isTipoTransacao(value: unknown): value is TipoTransacao {
+    return Object.values(TipoTransacao).includes(value as TipoTransacao);
+}
+
+// ENTENDER O QUE ESSE CODIGO ACIMA FAZ
 
 import { v4 as uuidv4 } from 'uuid';
 export interface TransacaoPropriedades {
@@ -10,8 +28,8 @@ export interface TransacaoPropriedades {
     id?: string;
     id_carteira: string;
     valor: number;
-    categoria: Categoria;
-    tipo_transacao: TipoTransacao;
+    categoria: unknown;
+    tipo_transacao: unknown;
     criado_em?: Date;
 }
 
@@ -20,10 +38,16 @@ export class Transacao implements TransacaoPropriedades {
     nome: string;
     id_carteira: string;
     valor: number;
-    categoria: Categoria;
+    categoria: Categorias;
     tipo_transacao: TipoTransacao;
     criado_em: Date;
     constructor(props: TransacaoPropriedades) {
+        if (!isCategoria(props.categoria)) {
+            throw new Error(`Categoria inválida`);
+        }
+        if (!isTipoTransacao(props.tipo_transacao)) {
+            throw new Error(`Tipo de Transação inválida`);
+        }
         this.id = props.id ?? uuidv4();
         this.nome = props.nome;
         this.id_carteira = props.id_carteira;
@@ -41,14 +65,6 @@ export class Transacao implements TransacaoPropriedades {
 
         if(props.nome.length === 0) {
             throw new Error("O nome da transação não pode ser vazio");
-        }
-        
-        if(CATEGORIAS.includes(props.categoria) === false) {
-            throw new Error("Categoria inválida");
-        }
-
-        if(TIPOS_TRANSACAO.includes(props.tipo_transacao) === false) {
-            throw new Error("Tipo de transação inválida");
         }
         
         return new Transacao(props);

@@ -5,23 +5,11 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "postgresql"
-}
-
-enum Categoria {
-  LAZER
-  MERCADO
-  DESPESAS
-  COMPRAS
-  COMIDA
-}
-
-enum TipoTransacao {
-  DEBITO
-  CREDITO
 }
 
 model Usuario {
@@ -48,9 +36,9 @@ model Transacao {
   id String @id @default(uuid())
   carteira_id String
   nome String
-  categoria Categoria
+  categoria String
   valor Decimal
-  tipo_transacao TipoTransacao
+  tipo_transacao String
   criado_em DateTime @default(now())
 
   carteira Carteira @relation(fields: [carteira_id], references: [id])
