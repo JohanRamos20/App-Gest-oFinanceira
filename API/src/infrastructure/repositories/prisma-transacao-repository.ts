@@ -1,6 +1,7 @@
 import type { prisma} from "../../database/prisma";
 import { TransacaoRepository, FiltroTransacao } from "../../domain/repository/transacao-repository";
 import { Transacao, Categorias, TipoTransacao } from "../../domain/entities/transacao";
+import { Decimal } from "@prisma/client/runtime/client";
 export class PrismaTransacaoRepository implements TransacaoRepository {
     constructor(private Prisma: typeof prisma) {}
 
@@ -17,15 +18,15 @@ export class PrismaTransacaoRepository implements TransacaoRepository {
             },
         });
 
-        return new Transacao({
-            id: criada.id,
-            nome: criada.nome,
-            id_carteira: criada.carteira_id,
-            valor: Number(criada.valor),
-            categoria: criada.categoria,
-            tipo_transacao: criada.tipo_transacao,
-            criado_em: criada.criado_em,
+        return this.toDomain(criada);
+    }
+
+    async getAllTransacaoByCarteira(carteira_id: string): Promise<Transacao[]> {
+        const transacoes = await this.Prisma.transacao.findMany({
+            where: { carteira_id },
+            orderBy: { criado_em: "desc" },
         });
+        return transacoes.map((t) => this.toDomain(t));
     }
 
     async getTransacoesByFiltro(carteira_id: string, filtro: FiltroTransacao): Promise<Transacao[]> {
@@ -39,15 +40,27 @@ export class PrismaTransacaoRepository implements TransacaoRepository {
                 criado_em: "desc",
             },
         });
-        return transacoes.map((t) => new Transacao({
-            id: t.id,
-            nome: t.nome,
-            id_carteira: t.carteira_id,
-            valor: Number(t.valor),
-            categoria: t.categoria,
-            tipo_transacao: t.tipo_transacao,
-            criado_em: t.criado_em,
-        }));
+        return transacoes.map((t) => this.toDomain(t));
+    }
+
+    private toDomain(transacao: {
+        id: string;
+        nome: string;
+        carteira_id: string;
+        valor: Decimal;
+        categoria: string;
+        tipo_transacao: string;
+        criado_em: Date;
+    }): Transacao {
+        return Transacao.createFromPrimitives({
+            id: transacao.id,
+            nome: transacao.nome,
+            id_carteira: transacao.carteira_id,
+            valor: Number(transacao.valor),
+            categoria: transacao.categoria,
+            tipo_transacao: transacao.tipo_transacao,
+            criado_em: transacao.criado_em,
+        });
     }
 
 }

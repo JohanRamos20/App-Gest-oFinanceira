@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 
 export enum Categorias {
     LAZER = 'LAZER',
@@ -20,9 +21,6 @@ export function isTipoTransacao(value: unknown): value is TipoTransacao {
     return Object.values(TipoTransacao).includes(value as TipoTransacao);
 }
 
-// ENTENDER O QUE ESSE CODIGO ACIMA FAZ
-
-import { v4 as uuidv4 } from 'uuid';
 export interface TransacaoPropriedades {
     nome: string;
     id?: string;
@@ -70,4 +68,16 @@ export class Transacao implements TransacaoPropriedades {
         return new Transacao(props);
     }
 
+    static createFromPrimitives(props: {
+        id: string;
+        nome: string;
+        id_carteira: string;
+        valor: number;
+        categoria: string;
+        tipo_transacao: string;
+        criado_em: Date;
+    }): Transacao {
+        return new Transacao(props);
+
+}
 }
