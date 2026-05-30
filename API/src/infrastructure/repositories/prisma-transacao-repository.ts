@@ -1,7 +1,7 @@
 import type { prisma} from "../../database/prisma";
 import { TransacaoRepository, FiltroTransacao } from "../../domain/repository/transacao-repository";
-import { Transacao, Categorias, TipoTransacao } from "../../domain/entities/transacao";
-import { Decimal } from "@prisma/client/runtime/client";
+import { Transacao} from "../../domain/entities/transacao";
+import { Prisma, Transacao as PrismaTransacao } from "@prisma/client";
 export class PrismaTransacaoRepository implements TransacaoRepository {
     constructor(private Prisma: typeof prisma) {}
 
@@ -43,15 +43,7 @@ export class PrismaTransacaoRepository implements TransacaoRepository {
         return transacoes.map((t) => this.toDomain(t));
     }
 
-    private toDomain(transacao: {
-        id: string;
-        nome: string;
-        carteira_id: string;
-        valor: Decimal;
-        categoria: string;
-        tipo_transacao: string;
-        criado_em: Date;
-    }): Transacao {
+    private toDomain(transacao: PrismaTransacao): Transacao {
         return Transacao.createFromPrimitives({
             id: transacao.id,
             nome: transacao.nome,

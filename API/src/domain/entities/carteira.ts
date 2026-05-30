@@ -25,4 +25,12 @@ export class Carteira implements CarteiraPropriedades{
 
         return new Carteira(props);
     }
+
+    static createFromPrimitives(props: {
+        id: string;
+        id_usuario: string;
+        saldo_cache: number;
+    }): Carteira {
+        return new Carteira(props);
+    }
 }
