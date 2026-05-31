@@ -1,7 +1,7 @@
 import type { prisma} from "../../database/prisma";
 import { TransacaoRepository, FiltroTransacao } from "../../domain/repository/transacao-repository";
 import { Transacao} from "../../domain/entities/transacao";
-import { Prisma, Transacao as PrismaTransacao } from "@prisma/client";
+import { Transacao as PrismaTransacao } from "@prisma/client";
 export class PrismaTransacaoRepository implements TransacaoRepository {
     constructor(private Prisma: typeof prisma) {}
 
@@ -54,5 +54,4 @@ export class PrismaTransacaoRepository implements TransacaoRepository {
             criado_em: transacao.criado_em,
         });
     }
-
 }

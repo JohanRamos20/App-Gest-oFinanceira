@@ -37,4 +37,15 @@ export class Usuario implements UsuarioPropriedades {
     atualizarSenha(novaSenha: string) {
         this.senha_hash = novaSenha;
     }
+
+    static createFromPrimitives(props: {
+    id: string;
+    nome: string;
+    email: string;
+    senha_hash: string;
+    criado_em: Date;
+    }): Usuario {
+        return new Usuario(props);
+    }
+
 }
