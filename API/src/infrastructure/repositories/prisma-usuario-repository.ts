@@ -20,6 +20,15 @@ export class PrismaUsuarioRepository implements UsuarioRepository {
         return this.toDomain(criado);
     }
 
+    async findByEmail(email: string): Promise<Usuario | null> {
+        const encontrado = await this.Prisma.usuario.findUnique({
+            where: { email },
+        });
+        if (!encontrado) {
+            return null;
+        }
+        return this.toDomain(encontrado);
+    }
 
     async findByID(id: string): Promise<Usuario | null> {
         const encontrado = await this.Prisma.usuario.findUnique({
