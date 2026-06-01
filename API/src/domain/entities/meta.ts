@@ -36,4 +36,11 @@ export class Meta implements MetaPropriedades {
         }
         return new Meta(props);
     }
+
+    updateValorGuardado(valor: number) {
+        if(this.valor_guardado + valor > this.valor_total) {
+            throw new Error("O valor guardado não pode ser maior que o valor total da meta");
+        }   
+        this.valor_guardado += valor;
+    }
 }
