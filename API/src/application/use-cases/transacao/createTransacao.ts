@@ -18,13 +18,10 @@ class CreateTransacao {
     ) {}
 
     async create(req: CreateTransacaoRequest) : Promise<Transacao> {
-        const carteiraExistente = await this.usuarioRepository.findWallet(req.id_carteira);
+        const carteiraExistente = await this.carteiraRepository.getByUserId(req.id_carteira);
         if(!carteiraExistente) {
             throw new Error("Carteira não encontrada");
         }
-        if(req.valor <= 0) {
-            throw new Error("O valor da transação deve ser maior que zero");
-    }
 
     const transacao = Transacao.create({
         nome: req.nome,
