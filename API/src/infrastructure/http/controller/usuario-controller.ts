@@ -14,8 +14,8 @@ export class UsuarioController{
 
     async createUser(req: Request, res: Response): Promise<void> {
         try {
-            const user = await this.usuarioUseCases.createUser.create(req.body);
-            res.status(201).json(user);
+            const usuario = await this.usuarioUseCases.createUser.create(req.body)
+            res.status(201).json(usuario);
         } catch (error) {
             res.status(400).json({error});
         }
@@ -24,7 +24,7 @@ export class UsuarioController{
     async updatePassword(req: Request, res: Response): Promise<void>{
         try{
             const user = await this.usuarioUseCases.updatePassword.update(req.body)
-            res.status(200).json(user)
+            res.status(200).json({message: "Senha alterada com sucesso!"})
         }
         catch (error) {
             res.status(400).json({error})
@@ -40,13 +40,11 @@ export class UsuarioController{
                 return;
             }
 
-            const wallet = await this.usuarioUseCases.userWallet.getUserWallet(id)
+            const wallet = await this.usuarioUseCases.userWallet.getUserWallet({id_usuario: id})
             res.status(200).json(wallet)
         }
         catch (error) {
             res.status(400).json({error})
         }
     }
-
-
 }

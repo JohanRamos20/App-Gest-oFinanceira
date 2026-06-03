@@ -23,19 +23,15 @@ export class Usuario implements UsuarioPropriedades {
     }
 
     static create(props: UsuarioPropriedades) : Usuario {
-        if(props.nome.length < 0){
+        if(props.nome.length === 0){
             throw new Error("O nome é obrigatório");
         }
-        const emailRegex = /^[^\s@]+@[^\s@]+.[^\s@]+$/
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
         if (!props.email || !emailRegex.test(props.email)) {
             throw new Error("O email é inválido");
         }
         return new Usuario(props);
-    }
-
-    atualizarSenha(novaSenha: string) {
-        this.senha_hash = novaSenha;
     }
 
     static createFromPrimitives(props: {

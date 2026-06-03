@@ -1,16 +1,15 @@
 import { Carteira } from "../../../domain/entities/carteira";
 import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
 
-export interface UserWallet {
+export interface UserWalletRequest {
     id_usuario: string;
-    saldo_cache: number;
 }
 
 export class UserWalletUseCase {
     constructor(private usuarioRepository: UsuarioRepository) {}
 
-    async getUserWallet(id_usuario: string) : Promise<Carteira> {
-        const carteira = await this.usuarioRepository.findWallet(id_usuario);
+    async getUserWallet(req: UserWalletRequest) : Promise<Carteira> {
+        const carteira = await this.usuarioRepository.findWallet(req.id_usuario);
         if(!carteira) {
             throw new Error("Carteira não encontrada para o usuário");
         }

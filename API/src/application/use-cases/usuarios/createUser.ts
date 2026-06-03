@@ -1,20 +1,21 @@
 import bcrypt from 'bcrypt';
+import { toUsuarioDto, UsuarioDto } from '../../dtos/usuario-dtos';
 import { Usuario } from "../../../domain/entities/usuario";
 import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
 import { CarteiraRepository } from "../../../domain/repository/carteira-repository";
 import { Carteira } from "../../../domain/entities/carteira";
 
-export interface CreateUserRequest {
+export interface CreateUserRequest{
     nome: string;
     email: string;
     senha: string;
 }
 
 export class CreateUserUseCase {
-    constructor(private usuarioRepository: UsuarioRepository, 
+    constructor(private usuarioRepository: UsuarioRepository,
         private carteiraRepository: CarteiraRepository) {}
 
-    async create (req: CreateUserRequest) : Promise<Usuario> {
+    async create (req: CreateUserRequest) : Promise<UsuarioDto> {
         
         const usuarioExistente =  await this.usuarioRepository.findByEmail(req.email);
         if(usuarioExistente) {
@@ -42,6 +43,6 @@ export class CreateUserUseCase {
 
         await this.carteiraRepository.createWallet(userWallet);
 
-        return usuario;
+        return toUsuarioDto(usuario);
     }
 }

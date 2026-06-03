@@ -55,6 +55,15 @@ export class PrismaUsuarioRepository implements UsuarioRepository {
         });
     }
 
+    async updatePassword(id_usuario: string, senha: string): Promise<void> {
+        const usuario = await this.Prisma.usuario.update({
+            where: { id: id_usuario },
+            data : {
+                senha_hash: senha
+            }
+        });
+    }
+
     private toDomain(usuario: PrismaUsuario): Usuario {
         return Usuario.createFromPrimitives({
             id: usuario.id,

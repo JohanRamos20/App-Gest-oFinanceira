@@ -1,7 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Usuario } from "../../../domain/entities/usuario";
 import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
-import { CreateUserRequest } from './createUser';
 
 export interface UpdatePasswordRequest {
     id: string;
@@ -11,7 +9,7 @@ export interface UpdatePasswordRequest {
 export class UpdatePasswordUseCase {
     constructor(private usuarioRepository: UsuarioRepository) {}
     
-    async update (req: UpdatePasswordRequest) : Promise<Usuario> {
+    async update (req: UpdatePasswordRequest) : Promise<void> {
         const usuarioExistente = await this.usuarioRepository.findByID(req.id);
         if (!usuarioExistente) {
             throw new Error("Usuário não encontrado");
@@ -25,8 +23,6 @@ export class UpdatePasswordUseCase {
             throw new Error("A nova senha deve ser diferente da senha atual");
         }
 
-        usuarioExistente.atualizarSenha(senhaHash);
-
-        return await this.usuarioRepository.create(usuarioExistente);
+        return await this.usuarioRepository.updatePassword(usuarioExistente.id, senhaHash);
     }
 }
