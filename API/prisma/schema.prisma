@@ -48,13 +48,13 @@ model Transacao {
 
 model Metas {
   id String @id @default(uuid())
-  user_id String
+  id_usuario String
   nome String
   descricao String
   valor_total Decimal
   valor_guardado Decimal @default(0)
   criado_em DateTime @default(now())
 
-  usuario Usuario @relation(fields: [user_id], references: [id])
-  @@index([user_id])
+  usuario Usuario @relation(fields: [id_usuario], references: [id])
+  @@index([id_usuario])
 }

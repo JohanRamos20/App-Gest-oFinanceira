@@ -43,4 +43,17 @@ export class Meta implements MetaPropriedades {
         }   
         this.valor_guardado += valor;
     }
+
+    static createFromPrimitives(props: {
+        id: string;
+        id_usuario: string;
+        nome: string;
+        descricao: string;
+        valor_total: number;
+        valor_guardado: number;
+        criado_em: Date;
+    }): Meta {
+        return new Meta(props);
+        }
+
 }
