@@ -6,7 +6,7 @@ export interface UserWallet {
     saldo_cache: number;
 }
 
-class UserWalletUseCase {
+export class UserWalletUseCase {
     constructor(private usuarioRepository: UsuarioRepository) {}
 
     async getUserWallet(id_usuario: string) : Promise<Carteira> {

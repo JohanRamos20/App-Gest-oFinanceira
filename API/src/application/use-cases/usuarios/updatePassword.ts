@@ -8,10 +8,10 @@ export interface UpdatePasswordRequest {
     senha: string;
 }
 
-class UpdatePassword {
+export class UpdatePasswordUseCase {
     constructor(private usuarioRepository: UsuarioRepository) {}
     
-    async updatePassword (req: UpdatePasswordRequest) : Promise<Usuario> {
+    async update (req: UpdatePasswordRequest) : Promise<Usuario> {
         const usuarioExistente = await this.usuarioRepository.findByID(req.id);
         if (!usuarioExistente) {
             throw new Error("Usuário não encontrado");

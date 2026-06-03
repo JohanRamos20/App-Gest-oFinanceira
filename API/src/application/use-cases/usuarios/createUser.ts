@@ -10,7 +10,7 @@ export interface CreateUserRequest {
     senha: string;
 }
 
-class CreateUser {
+export class CreateUserUseCase {
     constructor(private usuarioRepository: UsuarioRepository, 
         private carteiraRepository: CarteiraRepository) {}
 
