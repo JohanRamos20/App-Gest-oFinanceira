@@ -4,15 +4,15 @@ import { type DeleteMetaUseCase } from '../../../application/use-cases/metas/del
 import { type FindAllMetasUseCase } from '../../../application/use-cases/metas/findAllMetas';
 import { type UpdateMetaUseCase } from '../../../application/use-cases/metas/updateMeta';
 
-export interface MetasUseCases {
+export interface MetaUseCases {
     createMeta: CreateMetaUseCase;
     updateMeta: UpdateMetaUseCase;
     deleteMeta: DeleteMetaUseCase;
     findAllMetas: FindAllMetasUseCase;
 }
 
-export class MetasController {
-    constructor(private readonly metasUseCases: MetasUseCases) {}
+export class MetaController {
+    constructor(private readonly metasUseCases: MetaUseCases) {}
 
     async createMeta(req: Request, res: Response): Promise<void> {
         try {

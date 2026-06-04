@@ -28,6 +28,8 @@ export class CreateMetaUseCase {
             valor_total: req.valor_total,
         });
 
+        await this.metaRepository.createMeta(meta);
+
         return toMetaDto(meta);
     }
         
