@@ -14,7 +14,9 @@ export class TransacaoController {
             res.status(201).json(transacao);
         }
         catch (error) {
-            res.status(400).json({error})
+            res.status(400).json({
+                error: error instanceof Error ? error.message : String(error)
+            })
         }
     }
 }
