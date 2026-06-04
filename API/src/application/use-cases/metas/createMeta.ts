@@ -1,4 +1,5 @@
 import { Meta } from "../../../domain/entities/meta";
+import { toMetaDto, MetaDto } from "../../dtos/metas-dtos";
 import { MetasRepository } from "../../../domain/repository/meta-repository";
 import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
 
@@ -9,10 +10,10 @@ export interface CreateMetaRequest {
     valor_total: number;
 }
 
-class CreateMeta {
+export class CreateMetaUseCase {
     constructor(private metaRepository: MetasRepository, private usuarioRepository: UsuarioRepository) {}
 
-    async create (req: CreateMetaRequest) : Promise<Meta> {
+    async create (req: CreateMetaRequest) : Promise<MetaDto> {
 
         const usuarioExiste = await this.usuarioRepository.findByID(req.id_usuario);
 
@@ -27,7 +28,7 @@ class CreateMeta {
             valor_total: req.valor_total,
         });
 
-        return await this.metaRepository.createMeta(meta);
+        return toMetaDto(meta);
     }
         
 }

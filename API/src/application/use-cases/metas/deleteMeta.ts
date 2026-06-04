@@ -5,7 +5,7 @@ export interface DeleteMetaRequest {
     id_meta: string;
 }
 
-class DeleteMeta {
+export class DeleteMetaUseCase {
     constructor(private metaRepository: MetasRepository) {}
 
     async delete (req: DeleteMetaRequest) : Promise<void> {
@@ -14,8 +14,6 @@ class DeleteMeta {
         if (!metaDelete) {
             throw new Error("Meta não encontrada");
         }
-
         await this.metaRepository.deleteMeta(req.id_meta);
-
     }
 }

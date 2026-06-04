@@ -1,17 +1,18 @@
 import { Meta } from "../../../domain/entities/meta";
 import { MetasRepository } from "../../../domain/repository/meta-repository";
 import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
+import { toMetaDto, MetaDto } from "../../dtos/metas-dtos";
 
 
 export interface FindAllMetasRequest {
     id_usuario: string;
 }
 
-class FindAllMetas {
+export class FindAllMetasUseCase {
     constructor(private metaRepository: MetasRepository, 
         private usuarioRepository: UsuarioRepository) {}
 
-    async findAll (req: FindAllMetasRequest) : Promise<Meta[]> {
+    async findAll (req: FindAllMetasRequest) : Promise<MetaDto[]> {
         const usuarioCriado = await this.usuarioRepository.findByID(req.id_usuario);
 
         if (!usuarioCriado) {
@@ -20,6 +21,6 @@ class FindAllMetas {
 
         const metasUsuario = await this.metaRepository.getAllMetasByUser(req.id_usuario);
 
-        return metasUsuario;
+        return metasUsuario.map(toMetaDto);
     }
 }

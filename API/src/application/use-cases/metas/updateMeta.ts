@@ -1,23 +1,24 @@
 import { Meta } from "../../../domain/entities/meta";
 import { MetasRepository } from "../../../domain/repository/meta-repository";
+import { MetaDto, toMetaDto } from "../../dtos/metas-dtos";
 
 export interface UpdateMetaRequest {
     id_meta: string;
     valor: number;
 }
 
-class UpdateMeta {
+export class UpdateMetaUseCase {
     constructor(private metaRepository: MetasRepository) {}
 
-    async update (req: UpdateMetaRequest) : Promise<Meta> {
+    async update (req: UpdateMetaRequest) : Promise<MetaDto> {
         const meta = await this.metaRepository.findMetaByID(req.id_meta);
 
         if (!meta) {
             throw new Error("Meta não encontrada");
         }
 
-        meta.updateValorGuardado(req.valor);
+        this.metaRepository.updateMeta(meta)
 
-        return await this.metaRepository.updateMeta(meta);
+        return toMetaDto(meta);
     }
 }
