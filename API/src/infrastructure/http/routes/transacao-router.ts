@@ -5,5 +5,6 @@ const transacaoRoutes = Router();
 const transacaoController = makeTransacaoController();
 
 transacaoRoutes.post('/transacoes', (req, res) => transacaoController.createTransacao(req, res));
+transacaoRoutes.get('/usuarios/:id_usuario/transacoes', (req, res) => transacaoController.findTransacaoTypes(req, res));
 
 export { transacaoRoutes };

@@ -1,6 +1,5 @@
 import { TransacaoRepository } from "../../../domain/repository/transacao-repository";
 import { CarteiraRepository } from "../../../domain/repository/carteira-repository";
-import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
 import { Transacao, Categorias, TipoTransacao } from "../../../domain/entities/transacao";
 import { toTransacaoDto, TransacaoDto } from "../../dtos/transacao-dtos";
 
