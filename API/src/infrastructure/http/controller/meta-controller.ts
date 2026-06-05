@@ -16,35 +16,63 @@ export class MetaController {
 
     async createMeta(req: Request, res: Response): Promise<void> {
         try {
-            const meta = await this.metasUseCases.createMeta.create(req.body);
+            const { id_usuario } = req.params;
+            if (!id_usuario || Array.isArray(id_usuario)) {
+                res.status(400).json({ message: "ID de usuário inválido" });
+                return;
+            }
+            const meta = await this.metasUseCases.createMeta.create({
+                ...req.body,
+                id_usuario
+            });
             res.status(201).json(meta);
         }
         catch (error) {
-            res.status(400).json({error});
+            res.status(400).json({
+                error: error instanceof Error ? error.message : String(error)
+            })
         }
     }
 
     async updateMeta(req: Request, res: Response): Promise<void> {
         try{
-            const meta = await this.metasUseCases.updateMeta.update(req.body);
-            res.status(200).json(meta);
+
+            const { id_meta }  = req.params;
+            if(!id_meta || Array.isArray(id_meta)){
+                res.status(400).json({message: "ID de meta inválido"});
+                return;
+            }
+            const resultadosUpdateMeta = await this.metasUseCases.updateMeta.update({
+                id_meta,
+                valor: req.body.valor
+            });
+            res.status(200).json(resultadosUpdateMeta);
         }
         catch (error) {
-            res.status(400).json({error});
+            res.status(400).json({
+                error: error instanceof Error ? error.message : String(error)
+            })
         }
     }
 
     async deleteMeta(req: Request, res: Response): Promise<void> {
         try{
-            await this.metasUseCases.deleteMeta.delete(req.body);
+            const {id_meta} = req.params;
+            if(!id_meta || Array.isArray(id_meta)){
+                res.status(400).json({message: "ID de meta inválido"});
+                return;
+            }
+            await this.metasUseCases.deleteMeta.delete({id_meta});
             res.status(200).json({message: "Meta deletada com sucesso!"});
         }
         catch (error) {
-            res.status(400).json({error});
+            res.status(400).json({
+                error: error instanceof Error ? error.message : String(error)
+            })
         }
     }
 
-        async findAllMetas(req: Request, res: Response): Promise<void> {
+    async findAllMetas(req: Request, res: Response): Promise<void> {
         try{
             const { id_usuario } = req.params
             if(!id_usuario || Array.isArray(id_usuario)){
@@ -55,7 +83,9 @@ export class MetaController {
             res.status(200).json(metas);
         }
         catch (error) {
-            res.status(400).json({error});
+            res.status(400).json({
+                error: error instanceof Error ? error.message : String(error)
+            })
         }
 
 }
