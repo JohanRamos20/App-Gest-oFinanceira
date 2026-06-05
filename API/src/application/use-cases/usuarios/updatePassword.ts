@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
 
 export interface UpdatePasswordRequest {
-    id: string;
+    id_usuario: string;
     senha: string;
 }
 
@@ -10,7 +10,7 @@ export class UpdatePasswordUseCase {
     constructor(private usuarioRepository: UsuarioRepository) {}
     
     async update (req: UpdatePasswordRequest) : Promise<void> {
-        const usuarioExistente = await this.usuarioRepository.findByID(req.id);
+        const usuarioExistente = await this.usuarioRepository.findByID(req.id_usuario);
         if (!usuarioExistente) {
             throw new Error("Usuário não encontrado");
         }

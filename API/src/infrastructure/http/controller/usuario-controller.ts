@@ -23,7 +23,12 @@ export class UsuarioController{
 
     async updatePassword(req: Request, res: Response): Promise<void>{
         try{
-            const user = await this.usuarioUseCases.updatePassword.update(req.body)
+            const {id_usuario} = req.params
+            if(!id_usuario || Array.isArray(id_usuario)){
+                res.status(400).json({message: "ID inválido"});
+                return;
+            }
+            await this.usuarioUseCases.updatePassword.update({ ...req.body, id_usuario})
             res.status(200).json({message: "Senha alterada com sucesso!"})
         }
         catch (error) {
@@ -33,14 +38,14 @@ export class UsuarioController{
 
     async userWallet(req: Request, res: Response): Promise<void>{
         try{
-            const { id } = req.params
+            const { id_usuario } = req.params
 
-            if(!id || Array.isArray(id)){
+            if(!id_usuario || Array.isArray(id_usuario)){
                 res.status(400).json({message: "ID inválido"});
                 return;
             }
 
-            const wallet = await this.usuarioUseCases.userWallet.getUserWallet({id_usuario: id})
+            const wallet = await this.usuarioUseCases.userWallet.getUserWallet({id_usuario})
             res.status(200).json(wallet)
         }
         catch (error) {

@@ -14,7 +14,15 @@ export class TransacaoController {
 
     async createTransacao(req: Request, res: Response): Promise<void> {
         try{
-            const transacao = await this.transacaoUseCases.createTransacao.create(req.body)
+            const { id_usuario } = req.params
+            if(!id_usuario || Array.isArray(id_usuario)){
+                res.status(400).json({message: "ID de usuário inválido"});
+                return;
+            }
+            const transacao = await this.transacaoUseCases.createTransacao.create({
+                ...req.body,
+                id_usuario
+            })
             res.status(201).json(transacao);
         }
         catch (error) {
@@ -55,7 +63,7 @@ export class TransacaoController {
             });
             res.status(200).json(transacoes);
         } catch (error) {            
-        res.status(400).json({
+            res.status(400).json({
                 error: error instanceof Error ? error.message : String(error)
             })
         }
