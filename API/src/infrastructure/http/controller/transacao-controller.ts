@@ -39,7 +39,6 @@ export class TransacaoController {
                 res.status(400).json({message: "ID de usuário inválido"});
                 return;
             }
-
             const { categoria, tipo_transacao } = req.query;
 
             if (categoria !== undefined && !isCategoria(categoria)) {
