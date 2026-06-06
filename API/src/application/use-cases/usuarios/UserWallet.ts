@@ -1,5 +1,5 @@
 import { Carteira } from "../../../domain/entities/carteira";
-import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
+import { UsuarioRepository } from "../../../domain/repositories/usuario-repository";
 
 export interface UserWalletRequest {
     id_usuario: string;

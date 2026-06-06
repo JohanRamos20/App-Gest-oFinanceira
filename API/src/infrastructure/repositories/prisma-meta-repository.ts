@@ -1,6 +1,6 @@
 import { Meta } from "../../domain/entities/meta";
 import { Metas as PrismaMeta } from "@prisma/client";
-import { MetasRepository } from "../../domain/repository/meta-repository";
+import { MetasRepository } from "../../domain/repositories/meta-repository";
 import {prisma} from "../../database/prisma";
 
 export class PrismaMetaRepository implements MetasRepository {

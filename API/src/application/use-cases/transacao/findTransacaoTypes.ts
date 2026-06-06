@@ -1,6 +1,6 @@
-import { TransacaoRepository, FiltroTransacao } from "../../../domain/repository/transacao-repository";
+import { TransacaoRepository, FiltroTransacao } from "../../../domain/repositories/transacao-repository";
 import { TransacaoDto, toTransacaoDto } from "../../dtos/transacao-dtos";
-import { CarteiraRepository } from "../../../domain/repository/carteira-repository";
+import { CarteiraRepository } from "../../../domain/repositories/carteira-repository";
 
 export interface FindTransacaoTypesRequest {
     id_usuario: string;

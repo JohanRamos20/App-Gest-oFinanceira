@@ -1,5 +1,5 @@
 import { Meta } from "../../../domain/entities/meta";
-import { MetasRepository } from "../../../domain/repository/meta-repository";
+import { MetasRepository } from "../../../domain/repositories/meta-repository";
 
 export interface UpdateMetaRequest {
     id_meta: string;

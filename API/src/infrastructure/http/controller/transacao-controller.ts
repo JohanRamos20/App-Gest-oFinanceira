@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { TipoTransacao, Categorias ,isCategoria, isTipoTransacao } from "../../../domain/entities/transacao";
-import { FiltroTransacao } from "../../../domain/repository/transacao-repository";
+import { FiltroTransacao } from "../../../domain/repositories/transacao-repository";
 import { type CreateTransacaoUseCase } from "../../../application/use-cases/transacao/createTransacao";
 import { type FindTransacaoTypesUseCase } from "../../../application/use-cases/transacao/findTransacaoTypes";
 

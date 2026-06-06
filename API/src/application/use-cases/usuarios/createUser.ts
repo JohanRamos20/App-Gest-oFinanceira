@@ -1,7 +1,7 @@
 import { toUsuarioDto, UsuarioDto } from '../../dtos/usuario-dtos';
 import { Usuario } from "../../../domain/entities/usuario";
-import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
-import { CarteiraRepository } from "../../../domain/repository/carteira-repository";
+import { UsuarioRepository } from "../../../domain/repositories/usuario-repository";
+import { CarteiraRepository } from "../../../domain/repositories/carteira-repository";
 import { Carteira } from "../../../domain/entities/carteira";
 import { PasswordHasher } from '../../../domain/services/password-hasher';
 

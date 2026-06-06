@@ -1,6 +1,6 @@
 import { Meta } from "../../../domain/entities/meta";
-import { MetasRepository } from "../../../domain/repository/meta-repository";
-import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
+import { MetasRepository } from "../../../domain/repositories/meta-repository";
+import { UsuarioRepository } from "../../../domain/repositories/usuario-repository";
 import { toMetaDto, MetaDto } from "../../dtos/metas-dtos";
 
 

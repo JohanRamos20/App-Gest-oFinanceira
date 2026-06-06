@@ -1,5 +1,5 @@
 import type { prisma} from "../../database/prisma";
-import { TransacaoRepository, FiltroTransacao } from "../../domain/repository/transacao-repository";
+import { TransacaoRepository, FiltroTransacao } from "../../domain/repositories/transacao-repository";
 import { Transacao} from "../../domain/entities/transacao";
 import { Transacao as PrismaTransacao } from "@prisma/client";
 export class PrismaTransacaoRepository implements TransacaoRepository {

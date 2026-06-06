@@ -1,6 +1,6 @@
 import {Carteira} from "../../domain/entities/carteira";
 import {Carteira as PrismaCarteira} from "@prisma/client";
-import {CarteiraRepository} from "../../domain/repository/carteira-repository";
+import {CarteiraRepository} from "../../domain/repositories/carteira-repository";
 import {prisma} from "../../database/prisma";
 
 export class PrismaCarteiraRepository implements CarteiraRepository {

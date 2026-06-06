@@ -2,11 +2,13 @@ import {Request, Response} from "express";
 import {type CreateUserUseCase} from "../../../application/use-cases/usuarios/createUser";
 import {type UpdatePasswordUseCase} from "../../../application/use-cases/usuarios/updatePassword";
 import {type UserWalletUseCase} from "../../../application/use-cases/usuarios/userWallet";
+import {type LoginUserUseCase} from "../../../application/use-cases/usuarios/loginUser";
 
 export interface UsuarioUseCases {
     createUser: CreateUserUseCase;
     updatePassword: UpdatePasswordUseCase;
     userWallet: UserWalletUseCase;
+    loginUser: LoginUserUseCase;
 }
 
 export class UsuarioController{
@@ -52,4 +54,17 @@ export class UsuarioController{
             res.status(400).json({error})
         }
     }
+
+    async loginUser(req: Request, res: Response): Promise<void>{
+        try{
+            const tokenLogin = await this.usuarioUseCases.loginUser.login(req.body)
+            res.status(200).json({tokenLogin})
+        }
+        catch (error) {            
+            res.status(400).json({
+                error: error instanceof Error ? error.message : String(error)
+            })
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ export class BcryptPasswordHasher implements PasswordHasher {
         return await bcrypt.hash(password, this.saltRounds);
     }
     async compare(password: string, hash: string): Promise<boolean> {
+        const passwordHash = await bcrypt.hash(password, this.saltRounds);
         return await bcrypt.compare(password, hash);
     }
 }

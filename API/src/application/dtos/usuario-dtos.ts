@@ -7,6 +7,10 @@ export interface UsuarioDto{
     criado_em: Date;
 }
 
+export interface UsuarioLoginDto{
+    token: string;
+}
+
 export function toUsuarioDto(usuario: Usuario) : UsuarioDto{
     return {
         id : usuario.id,

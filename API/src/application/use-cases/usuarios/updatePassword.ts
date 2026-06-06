@@ -1,4 +1,4 @@
-import { UsuarioRepository } from "../../../domain/repository/usuario-repository";
+import { UsuarioRepository } from "../../../domain/repositories/usuario-repository";
 import { PasswordHasher } from '../../../domain/services/password-hasher';
 
 export interface UpdatePasswordRequest {

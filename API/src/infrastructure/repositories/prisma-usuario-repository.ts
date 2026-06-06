@@ -1,5 +1,5 @@
 import { Usuario } from "../../domain/entities/usuario";
-import { UsuarioRepository } from "../../domain/repository/usuario-repository";
+import { UsuarioRepository } from "../../domain/repositories/usuario-repository";
 import { Carteira } from "../../domain/entities/carteira";
 import type { prisma } from "../../database/prisma";
 import { Usuario as PrismaUsuario } from "@prisma/client";
