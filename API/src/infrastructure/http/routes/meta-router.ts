@@ -4,10 +4,11 @@ import { authMiddleware } from '../middleware/auth-middleware';
 
 const metaRoutes = Router()
 const metaController = makeMetaController()
+metaRoutes.use(authMiddleware())
 
-metaRoutes.post('/usuarios/:id/metas', authMiddleware(), (req, res) => metaController.createMeta(req, res));
-metaRoutes.patch('/usuarios/metas/:id_meta', authMiddleware(), (req, res) => metaController.updateMeta(req, res));
-metaRoutes.delete('/usuarios/metas/:id_meta', authMiddleware(), (req, res) => metaController.deleteMeta(req, res));
-metaRoutes.get('/usuarios/:id_usuario/metas', authMiddleware(), (req, res) => metaController.findAllMetas(req, res));
+metaRoutes.post('/usuarios/:id/metas',  metaController.createMeta.bind(metaController))
+metaRoutes.patch('/usuarios/metas/:id_meta', metaController.updateMeta.bind(metaController))
+metaRoutes.delete('/usuarios/metas/:id_meta', metaController.deleteMeta.bind(metaController))
+metaRoutes.get('/usuarios/:id_usuario/metas', metaController.findAllMetas.bind(metaController))
 
 export { metaRoutes };

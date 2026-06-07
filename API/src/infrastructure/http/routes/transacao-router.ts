@@ -5,7 +5,8 @@ import { authMiddleware } from '../middleware/auth-middleware';
 const transacaoRoutes = Router();
 const transacaoController = makeTransacaoController();
 
-transacaoRoutes.post('/usuarios/:id_usuario/transacoes',authMiddleware(), (req, res) => transacaoController.createTransacao(req, res));
-transacaoRoutes.get('/usuarios/:id_usuario/transacoes', authMiddleware() , (req, res) => transacaoController.findTransacaoTypes(req, res));
+transacaoRoutes.use(authMiddleware)
 
+transacaoRoutes.post('/usuarios/:id_usuario/transacoes', transacaoController.createTransacao.bind(transacaoController))
+transacaoRoutes.get('/usuarios/:id_usuario/transacoes', transacaoController.findTransacaoTypes.bind(transacaoController))
 export { transacaoRoutes };

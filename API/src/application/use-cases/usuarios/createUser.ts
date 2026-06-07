@@ -18,8 +18,10 @@ export class CreateUserUseCase {
     ) {}
 
     async create (req: CreateUserRequest) : Promise<UsuarioDto> {
+
+        const email = req.email.trim().toLowerCase()
         
-        const usuarioExistente =  await this.usuarioRepository.findByEmail(req.email);
+        const usuarioExistente =  await this.usuarioRepository.findByEmail(email);
         if(usuarioExistente) {
             throw new Error("Email já cadastrado");
         }

@@ -1,4 +1,4 @@
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import {type CreateUserUseCase} from "../../../application/use-cases/usuarios/createUser";
 import {type UpdatePasswordUseCase} from "../../../application/use-cases/usuarios/updatePassword";
 import {type UserWalletUseCase} from "../../../application/use-cases/usuarios/userWallet";
@@ -14,16 +14,16 @@ export interface UsuarioUseCases {
 export class UsuarioController{
     constructor(private readonly usuarioUseCases: UsuarioUseCases) {}
 
-    async createUser(req: Request, res: Response): Promise<void> {
+    async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const usuario = await this.usuarioUseCases.createUser.create(req.body)
             res.status(201).json(usuario);
         } catch (error) {
-            res.status(400).json({error});
+            next(error)
         }
     }
 
-    async updatePassword(req: Request, res: Response): Promise<void>{
+    async updatePassword(req: Request, res: Response, next: NextFunction): Promise<void>{
         try{
             const {id_usuario} = req.params
             if(!id_usuario || Array.isArray(id_usuario)){
@@ -34,11 +34,11 @@ export class UsuarioController{
             res.status(200).json({message: "Senha alterada com sucesso!"})
         }
         catch (error) {
-            res.status(400).json({error})
+            next(error)
         }
     }
 
-    async userWallet(req: Request, res: Response): Promise<void>{
+    async userWallet(req: Request, res: Response, next: NextFunction): Promise<void>{
         try{
             const { id_usuario } = req.params
 
@@ -51,19 +51,17 @@ export class UsuarioController{
             res.status(200).json(wallet)
         }
         catch (error) {
-            res.status(400).json({error})
+            next(error)
         }
     }
 
-    async loginUser(req: Request, res: Response): Promise<void>{
+    async loginUser(req: Request, res: Response, next: NextFunction): Promise<void>{
         try{
             const tokenLogin = await this.usuarioUseCases.loginUser.login(req.body)
             res.status(200).json({tokenLogin})
         }
         catch (error) {            
-            res.status(400).json({
-                error: error instanceof Error ? error.message : String(error)
-            })
+            next(error)
         }
     }
 

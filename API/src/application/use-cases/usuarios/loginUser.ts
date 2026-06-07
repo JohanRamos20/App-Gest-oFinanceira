@@ -16,7 +16,7 @@ export class LoginUserUseCase{
     ) {}
 
     async login(req: LoginUserRequest) : Promise<UsuarioLoginDto> {
-        const usuario = await this.usuarioRepository.findByEmail(req.email);
+        const usuario = await this.usuarioRepository.findByEmail(req.email.trim().toLowerCase());
         if(!usuario) {
             throw new Error("E-mail ou senha inválidos");
         }

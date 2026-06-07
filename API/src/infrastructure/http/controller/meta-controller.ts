@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { type NextFunction, Request, Response } from 'express';
 import { type CreateMetaUseCase } from '../../../application/use-cases/metas/createMeta';
 import { type DeleteMetaUseCase } from '../../../application/use-cases/metas/deleteMeta';
 import { type FindAllMetasUseCase } from '../../../application/use-cases/metas/findAllMetas';
@@ -14,7 +14,7 @@ export interface MetaUseCases {
 export class MetaController {
     constructor(private readonly metasUseCases: MetaUseCases) {}
 
-    async createMeta(req: Request, res: Response): Promise<void> {
+    async createMeta(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { id_usuario } = req.params;
             if (!id_usuario || Array.isArray(id_usuario)) {
@@ -28,13 +28,11 @@ export class MetaController {
             res.status(201).json(meta);
         }
         catch (error) {
-            res.status(400).json({
-                error: error instanceof Error ? error.message : String(error)
-            })
+            next(error)
         }
     }
 
-    async updateMeta(req: Request, res: Response): Promise<void> {
+    async updateMeta(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
 
             const { id_meta }  = req.params;
@@ -49,13 +47,11 @@ export class MetaController {
             res.status(200).json(resultadosUpdateMeta);
         }
         catch (error) {
-            res.status(400).json({
-                error: error instanceof Error ? error.message : String(error)
-            })
+            next(error)
         }
     }
 
-    async deleteMeta(req: Request, res: Response): Promise<void> {
+    async deleteMeta(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
             const {id_meta} = req.params;
             if(!id_meta || Array.isArray(id_meta)){
@@ -66,13 +62,11 @@ export class MetaController {
             res.status(200).json({message: "Meta deletada com sucesso!"});
         }
         catch (error) {
-            res.status(400).json({
-                error: error instanceof Error ? error.message : String(error)
-            })
+            next(error)
         }
     }
 
-    async findAllMetas(req: Request, res: Response): Promise<void> {
+    async findAllMetas(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
             const { id_usuario } = req.params
             if(!id_usuario || Array.isArray(id_usuario)){
@@ -83,10 +77,7 @@ export class MetaController {
             res.status(200).json(metas);
         }
         catch (error) {
-            res.status(400).json({
-                error: error instanceof Error ? error.message : String(error)
-            })
+            next(error)
         }
-
 }
 }

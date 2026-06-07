@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TipoTransacao, Categorias ,isCategoria, isTipoTransacao } from "../../../domain/entities/transacao";
 import { FiltroTransacao } from "../../../domain/repositories/transacao-repository";
 import { type CreateTransacaoUseCase } from "../../../application/use-cases/transacao/createTransacao";
@@ -12,7 +12,7 @@ export interface TransacaoUseCases {
 export class TransacaoController {
     constructor(private readonly transacaoUseCases: TransacaoUseCases) {}
 
-    async createTransacao(req: Request, res: Response): Promise<void> {
+    async createTransacao(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
             const { id_usuario } = req.params
             if(!id_usuario || Array.isArray(id_usuario)){
@@ -26,13 +26,11 @@ export class TransacaoController {
             res.status(201).json(transacao);
         }
         catch (error) {
-            res.status(400).json({
-                error: error instanceof Error ? error.message : String(error)
-            })
+            next(error)
         }
     }
 
-    async findTransacaoTypes(req: Request, res: Response): Promise<void> {
+    async findTransacaoTypes(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
             const { id_usuario } = req.params
             if(!id_usuario || Array.isArray(id_usuario)){
@@ -62,9 +60,7 @@ export class TransacaoController {
             });
             res.status(200).json(transacoes);
         } catch (error) {            
-            res.status(400).json({
-                error: error instanceof Error ? error.message : String(error)
-            })
+            next(error)
         }
     }
 
