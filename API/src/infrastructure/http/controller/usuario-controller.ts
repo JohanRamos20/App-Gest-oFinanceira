@@ -3,6 +3,7 @@ import {type CreateUserUseCase} from "../../../application/use-cases/usuarios/cr
 import {type UpdatePasswordUseCase} from "../../../application/use-cases/usuarios/updatePassword";
 import {type UserWalletUseCase} from "../../../application/use-cases/usuarios/userWallet";
 import {type LoginUserUseCase} from "../../../application/use-cases/usuarios/loginUser";
+import { userIdSchema, createUserSchema, loginUserSchema, updateUserPasswordSchema } from "../validators/user-validator";
 
 export interface UsuarioUseCases {
     createUser: CreateUserUseCase;
@@ -16,7 +17,8 @@ export class UsuarioController{
 
     async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const usuario = await this.usuarioUseCases.createUser.create(req.body)
+            const body = createUserSchema.parse(req.body)
+            const usuario = await this.usuarioUseCases.createUser.create(body)
             res.status(201).json(usuario);
         } catch (error) {
             next(error)
@@ -25,12 +27,9 @@ export class UsuarioController{
 
     async updatePassword(req: Request, res: Response, next: NextFunction): Promise<void>{
         try{
-            const {id_usuario} = req.params
-            if(!id_usuario || Array.isArray(id_usuario)){
-                res.status(400).json({message: "ID inválido"});
-                return;
-            }
-            await this.usuarioUseCases.updatePassword.update({ ...req.body, id_usuario})
+            const { id_usuario } = userIdSchema.parse(req.params)
+            const body = updateUserPasswordSchema.parse(req.body)
+            await this.usuarioUseCases.updatePassword.update({...body, id_usuario})
             res.status(200).json({message: "Senha alterada com sucesso!"})
         }
         catch (error) {
@@ -40,12 +39,7 @@ export class UsuarioController{
 
     async userWallet(req: Request, res: Response, next: NextFunction): Promise<void>{
         try{
-            const { id_usuario } = req.params
-
-            if(!id_usuario || Array.isArray(id_usuario)){
-                res.status(400).json({message: "ID inválido"});
-                return;
-            }
+            const { id_usuario } = userIdSchema.parse(req.params)
 
             const wallet = await this.usuarioUseCases.userWallet.getUserWallet({id_usuario})
             res.status(200).json(wallet)
@@ -57,7 +51,8 @@ export class UsuarioController{
 
     async loginUser(req: Request, res: Response, next: NextFunction): Promise<void>{
         try{
-            const tokenLogin = await this.usuarioUseCases.loginUser.login(req.body)
+            const body = loginUserSchema.parse(req.body)
+            const tokenLogin = await this.usuarioUseCases.loginUser.login(body)
             res.status(200).json({tokenLogin})
         }
         catch (error) {            
