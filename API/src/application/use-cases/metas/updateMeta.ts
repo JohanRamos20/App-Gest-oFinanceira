@@ -1,4 +1,5 @@
 import { Meta } from "../../../domain/entities/meta";
+import { BusinessError } from "../../../domain/errors/business-error";
 import { MetasRepository } from "../../../domain/repositories/meta-repository";
 
 export interface UpdateMetaRequest {
@@ -18,7 +19,7 @@ export class UpdateMetaUseCase {
         const meta = await this.metaRepository.findMetaByID(req.id_meta);
 
         if (!meta) {
-            throw new Error("Meta não encontrada");
+            throw new BusinessError("Meta não encontrada", 404);
         }
 
         meta.updateValorGuardado(req.valor);

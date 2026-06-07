@@ -3,7 +3,6 @@ import { type TokenGenerator} from "../../../domain/services/token-generator";
 import { JwtTokenGenerator } from "../../services/jwt-token-generator";
 
 export function extractBearerToken(authorizationHeader?: string) : string {
-    console.log('Authorization header:', authorizationHeader)
 
     if(!authorizationHeader){
         throw new Error("Token não informado")

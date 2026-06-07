@@ -2,6 +2,7 @@ import { Meta } from "../../../domain/entities/meta";
 import { toMetaDto, MetaDto } from "../../dtos/metas-dtos";
 import { MetasRepository } from "../../../domain/repositories/meta-repository";
 import { UsuarioRepository } from "../../../domain/repositories/usuario-repository";
+import { BusinessError } from "../../../domain/errors/business-error";
 
 export interface CreateMetaRequest {
     id_usuario: string;
@@ -18,7 +19,7 @@ export class CreateMetaUseCase {
         const usuarioExiste = await this.usuarioRepository.findByID(req.id_usuario);
 
         if (!usuarioExiste) {
-            throw new Error("Usuário não encontrado");
+            throw new BusinessError("Usuário não encontrado", 404);
         }
 
         const meta = Meta.create({

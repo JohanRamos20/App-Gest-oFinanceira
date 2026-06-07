@@ -2,6 +2,7 @@ import { TransacaoRepository } from "../../../domain/repositories/transacao-repo
 import { CarteiraRepository } from "../../../domain/repositories/carteira-repository";
 import { Transacao, Categorias, TipoTransacao } from "../../../domain/entities/transacao";
 import { toTransacaoDto, TransacaoDto } from "../../dtos/transacao-dtos";
+import { BusinessError } from "../../../domain/errors/business-error";
 
 export interface CreateTransacaoRequest {
     nome: string;
@@ -19,7 +20,7 @@ export class CreateTransacaoUseCase {
     async create(req: CreateTransacaoRequest) : Promise<TransacaoDto> {
         const carteiraExistente = await this.carteiraRepository.getByUserId(req.id_usuario);
         if(!carteiraExistente) {
-            throw new Error("Carteira não encontrada");
+            throw new BusinessError("Carteira não encontrada", 404);
         }
 
 

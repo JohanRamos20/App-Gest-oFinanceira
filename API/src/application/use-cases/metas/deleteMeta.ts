@@ -1,4 +1,5 @@
 import { Meta } from "../../../domain/entities/meta";
+import { BusinessError } from "../../../domain/errors/business-error";
 import { MetasRepository } from "../../../domain/repositories/meta-repository";
 
 export interface DeleteMetaRequest {
@@ -12,7 +13,7 @@ export class DeleteMetaUseCase {
         const metaDelete = await this.metaRepository.findMetaByID(req.id_meta);
 
         if (!metaDelete) {
-            throw new Error("Meta não encontrada");
+            throw new BusinessError("Meta não encontrada", 404);
         }
         await this.metaRepository.deleteMeta(req.id_meta);
     }

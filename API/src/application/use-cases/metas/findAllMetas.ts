@@ -1,4 +1,5 @@
 import { Meta } from "../../../domain/entities/meta";
+import { BusinessError } from "../../../domain/errors/business-error";
 import { MetasRepository } from "../../../domain/repositories/meta-repository";
 import { UsuarioRepository } from "../../../domain/repositories/usuario-repository";
 import { toMetaDto, MetaDto } from "../../dtos/metas-dtos";
@@ -16,7 +17,7 @@ export class FindAllMetasUseCase {
         const usuarioCriado = await this.usuarioRepository.findByID(req.id_usuario);
 
         if (!usuarioCriado) {
-            throw new Error("Usuário não encontrado");
+            throw new BusinessError("Usuário não encontrado", 404);
         }
 
         const metasUsuario = await this.metaRepository.getAllMetasByUser(req.id_usuario);

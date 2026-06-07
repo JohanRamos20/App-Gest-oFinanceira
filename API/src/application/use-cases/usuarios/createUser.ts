@@ -4,6 +4,7 @@ import { UsuarioRepository } from "../../../domain/repositories/usuario-reposito
 import { CarteiraRepository } from "../../../domain/repositories/carteira-repository";
 import { Carteira } from "../../../domain/entities/carteira";
 import { PasswordHasher } from '../../../domain/services/password-hasher';
+import { BusinessError } from '../../../domain/errors/business-error';
 
 export interface CreateUserRequest{
     nome: string;
@@ -23,18 +24,18 @@ export class CreateUserUseCase {
         
         const usuarioExistente =  await this.usuarioRepository.findByEmail(email);
         if(usuarioExistente) {
-            throw new Error("Email já cadastrado");
+            throw new BusinessError("Email já cadastrado", 409);
         }
 
         if(req.senha.length < 4) {
-            throw new Error("A senha deve conter no mínimo 4 caracteres");
+            throw new BusinessError("A senha deve conter no mínimo 4 caracteres");
         }
 
         const hashedPassword = await this.passwordHasher.hash(req.senha);
 
         const usuario = Usuario.create({
             nome: req.nome,
-            email: req.email,
+            email: email,
             senha_hash: hashedPassword
         });
         
