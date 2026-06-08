@@ -6,7 +6,7 @@ const metaRoutes = Router()
 const metaController = makeMetaController()
 metaRoutes.use(authMiddleware())
 
-metaRoutes.post('/usuarios/:id/metas',  metaController.createMeta.bind(metaController))
+metaRoutes.post('/usuarios/:id_usuario/metas',  metaController.createMeta.bind(metaController))
 metaRoutes.patch('/usuarios/metas/:id_meta', metaController.updateMeta.bind(metaController))
 metaRoutes.delete('/usuarios/metas/:id_meta', metaController.deleteMeta.bind(metaController))
 metaRoutes.get('/usuarios/:id_usuario/metas', metaController.findAllMetas.bind(metaController))

@@ -3,6 +3,8 @@ import { type CreateMetaUseCase } from '../../../application/use-cases/metas/cre
 import { type DeleteMetaUseCase } from '../../../application/use-cases/metas/deleteMeta';
 import { type FindAllMetasUseCase } from '../../../application/use-cases/metas/findAllMetas';
 import { type UpdateMetaUseCase } from '../../../application/use-cases/metas/updateMeta';
+import { metaIdSchema, createMetaSchema, updateMetaSchema } from '../validators/meta-validator';
+import { userIdSchema } from '../validators/user-validator';
 
 export interface MetaUseCases {
     createMeta: CreateMetaUseCase;
@@ -16,13 +18,10 @@ export class MetaController {
 
     async createMeta(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id_usuario } = req.params;
-            if (!id_usuario || Array.isArray(id_usuario)) {
-                res.status(400).json({ message: "ID de usuário inválido" });
-                return;
-            }
+            const { id_usuario } = userIdSchema.parse(req.params);
+            const body = createMetaSchema.parse(req.body)
             const meta = await this.metasUseCases.createMeta.create({
-                ...req.body,
+                ...body,
                 id_usuario
             });
             res.status(201).json(meta);
@@ -35,14 +34,12 @@ export class MetaController {
     async updateMeta(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
 
-            const { id_meta }  = req.params;
-            if(!id_meta || Array.isArray(id_meta)){
-                res.status(400).json({message: "ID de meta inválido"});
-                return;
-            }
+            const { id_meta }  = metaIdSchema.parse(req.params);
+            const body = updateMetaSchema.parse(req.body)
             const resultadosUpdateMeta = await this.metasUseCases.updateMeta.update({
+                ...body,
                 id_meta,
-                valor: req.body.valor
+                
             });
             res.status(200).json(resultadosUpdateMeta);
         }
@@ -53,11 +50,7 @@ export class MetaController {
 
     async deleteMeta(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
-            const {id_meta} = req.params;
-            if(!id_meta || Array.isArray(id_meta)){
-                res.status(400).json({message: "ID de meta inválido"});
-                return;
-            }
+            const {id_meta} = metaIdSchema.parse(req.params);
             await this.metasUseCases.deleteMeta.delete({id_meta});
             res.status(200).json({message: "Meta deletada com sucesso!"});
         }
@@ -68,11 +61,7 @@ export class MetaController {
 
     async findAllMetas(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
-            const { id_usuario } = req.params
-            if(!id_usuario || Array.isArray(id_usuario)){
-                res.status(400).json({message: "ID de usuário inválido"});
-                return;
-            }
+            const { id_usuario } = userIdSchema.parse(req.params)
             const metas = await this.metasUseCases.findAllMetas.findAll({id_usuario});
             res.status(200).json(metas);
         }
