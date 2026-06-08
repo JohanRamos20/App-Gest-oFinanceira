@@ -34,7 +34,7 @@ export class PrismaTransacaoRepository implements TransacaoRepository {
             where: {
                 carteira_id: carteira_id,
                 categoria: filtro.categoria,
-                tipo_transacao: filtro.tipoTransacao,
+                tipo_transacao: filtro.tipo_transacao,
             },
             orderBy: {
                 criado_em: "desc",

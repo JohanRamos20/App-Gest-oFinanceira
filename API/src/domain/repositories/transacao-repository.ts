@@ -2,7 +2,7 @@ import { TipoTransacao, Transacao, Categorias } from "../entities/transacao";
 
 export interface FiltroTransacao {
     categoria?: Categorias;
-    tipoTransacao?: TipoTransacao;
+    tipo_transacao?: TipoTransacao;
 }
 
 export interface TransacaoRepository {

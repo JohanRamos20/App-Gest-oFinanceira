@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { TipoTransacao, Categorias ,isCategoria, isTipoTransacao } from "../../../domain/entities/transacao";
-import { FiltroTransacao } from "../../../domain/repositories/transacao-repository";
 import { type CreateTransacaoUseCase } from "../../../application/use-cases/transacao/createTransacao";
 import { type FindTransacaoTypesUseCase } from "../../../application/use-cases/transacao/findTransacaoTypes";
+import { createTransacaoSchema, findTransacoesTypesSchema } from "../validators/transacao-validator";
+import { userIdSchema } from "../validators/user-validator";
 
 export interface TransacaoUseCases {
     createTransacao: CreateTransacaoUseCase;
@@ -14,13 +14,12 @@ export class TransacaoController {
 
     async createTransacao(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
-            const { id_usuario } = req.params
-            if(!id_usuario || Array.isArray(id_usuario)){
-                res.status(400).json({message: "ID de usuário inválido"});
-                return;
-            }
+            const { id_usuario } = userIdSchema.parse(req.params)
+
+            const body = createTransacaoSchema.parse(req.body)
+
             const transacao = await this.transacaoUseCases.createTransacao.create({
-                ...req.body,
+                ...body,
                 id_usuario
             })
             res.status(201).json(transacao);
@@ -32,27 +31,9 @@ export class TransacaoController {
 
     async findTransacaoTypes(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
-            const { id_usuario } = req.params
-            if(!id_usuario || Array.isArray(id_usuario)){
-                res.status(400).json({message: "ID de usuário inválido"});
-                return;
-            }
-            const { categoria, tipo_transacao } = req.query;
-
-            if (categoria !== undefined && !isCategoria(categoria)) {
-                res.status(400).json({ message: "Categoria inválida" });
-                return;
-            }
-
-            if (tipo_transacao !== undefined && !isTipoTransacao(tipo_transacao)) {
-                res.status(400).json({ message: "Tipo de transação inválido" });
-                return;
-            }
-
-            const filtro: FiltroTransacao = {
-                categoria: categoria as Categorias | undefined,
-                tipoTransacao: tipo_transacao as TipoTransacao | undefined
-            };
+            const { id_usuario } = userIdSchema.parse(req.params)
+            
+            const filtro = findTransacoesTypesSchema.parse(req.query);
 
             const transacoes = await this.transacaoUseCases.findTransacaoTypes.find({
                 id_usuario,
