@@ -16,6 +16,8 @@ describe ('Carteira', () =>{
         it('Deve gerar um id', () => {
             const carteira = Carteira.create(dadosValidos)
             expect(carteira.id).toBeDefined()
+            expect(typeof carteira.id).toBe('string')
+            expect(carteira.id.length).toBeGreaterThan(0)
         })
     })
 

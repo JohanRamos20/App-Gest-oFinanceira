@@ -40,7 +40,7 @@ export class Meta implements MetaPropriedades {
 
     updateValorGuardado(valor: number): { metaAtingida: boolean; valorRestante: number }  {
         if(valor <= 0) {
-            throw new Error("O valor guardado não pode ser negativo");
+            throw new Error("O valor guardado deve ser maior que 0");
         }
         if(this.valor_guardado + valor > this.valor_total) {
             throw new Error("O valor guardado não pode ser maior que o valor total da meta");
