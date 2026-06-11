@@ -23,8 +23,6 @@ export class CreateTransacaoUseCase {
             throw new BusinessError("Carteira não encontrada", 404);
         }
 
-
-
     const transacao = Transacao.create({
         nome: req.nome,
         id_carteira: carteiraExistente.id,
@@ -34,15 +32,6 @@ export class CreateTransacaoUseCase {
     });
 
     const transacaoCriada = await this.transacaoRepository.createTransacao(transacao);
-
-    const todasTransacoes = await this.transacaoRepository.getAllTransacaoByCarteira(carteiraExistente.id);
-    const novoSaldo = todasTransacoes.reduce((saldo, t) => {
-            return t.tipo_transacao === TipoTransacao.CREDITO
-            ? saldo + t.valor
-            : saldo - t.valor;
-    }, 0);
-
-    await this.carteiraRepository.setCacheWalletBalance(carteiraExistente.id, novoSaldo);
 
     return toTransacaoDto(transacaoCriada);
 }
