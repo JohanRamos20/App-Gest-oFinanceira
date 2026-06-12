@@ -26,8 +26,8 @@ export interface TransacaoPropriedades {
     id?: string;
     id_carteira: string;
     valor: number;
-    categoria: unknown;
-    tipo_transacao: unknown;
+    categoria: Categorias;
+    tipo_transacao: TipoTransacao;
     criado_em?: Date;
 }
 
@@ -40,12 +40,6 @@ export class Transacao implements TransacaoPropriedades {
     tipo_transacao: TipoTransacao;
     criado_em: Date;
     constructor(props: TransacaoPropriedades) {
-        if (!isCategoria(props.categoria)) {
-            throw new Error(`Categoria inválida`);
-        }
-        if (!isTipoTransacao(props.tipo_transacao)) {
-            throw new Error(`Tipo de Transação inválida`);
-        }
         this.id = props.id ?? uuidv4();
         this.nome = props.nome;
         this.id_carteira = props.id_carteira;
@@ -64,6 +58,14 @@ export class Transacao implements TransacaoPropriedades {
         if(props.nome.length === 0) {
             throw new Error("O nome da transação não pode ser vazio");
         }
+
+        if (!isCategoria(props.categoria)) {
+            throw new Error('Categoria inválida');
+        }
+        if (!isTipoTransacao(props.tipo_transacao)) {
+            throw new Error('Tipo de Transação inválida');
+        }
+
         
         return new Transacao(props);
     }
@@ -77,7 +79,11 @@ export class Transacao implements TransacaoPropriedades {
         tipo_transacao: string;
         criado_em: Date;
     }): Transacao {
-        return new Transacao(props);
+        return new Transacao({
+            ...props,
+            categoria : props.categoria as Categorias,
+            tipo_transacao : props.tipo_transacao as TipoTransacao
+        });
 
 }
 }

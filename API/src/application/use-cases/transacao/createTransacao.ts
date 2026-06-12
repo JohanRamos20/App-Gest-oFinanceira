@@ -33,6 +33,9 @@ export class CreateTransacaoUseCase {
 
     const transacaoCriada = await this.transacaoRepository.createTransacao(transacao);
 
+    const delta = req.tipo_transacao === TipoTransacao.CREDITO ? req.valor : -req.valor
+    await this.carteiraRepository.incrementCacheWalletBalance(carteiraExistente.id, delta)
+
     return toTransacaoDto(transacaoCriada);
 }
 }

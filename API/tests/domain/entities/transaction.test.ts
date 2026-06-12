@@ -1,14 +1,15 @@
 import { it, expect, describe } from 'vitest'
-import { Transacao} from '../../../src/domain/entities/transacao'
+import { Transacao, Categorias, TipoTransacao} from '../../../src/domain/entities/transacao'
 
 describe('Transacao', () =>{
+
 
     const dadosValidos = {
         nome : 'transacao_teste',
         id_carteira : 'id_carteira',
         valor : 100,
-        categoria : 'LAZER',
-        tipo_transacao : 'DEBITO'
+        categoria : 'LAZER' as Categorias,
+        tipo_transacao : 'DEBITO' as TipoTransacao
     }
 
     describe('Create()', () => {

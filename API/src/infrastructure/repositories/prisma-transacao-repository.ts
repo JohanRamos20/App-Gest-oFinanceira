@@ -21,14 +21,6 @@ export class PrismaTransacaoRepository implements TransacaoRepository {
         return this.toDomain(criada);
     }
 
-    async getAllTransacaoByCarteira(carteira_id: string): Promise<Transacao[]> {
-        const transacoes = await this.Prisma.transacao.findMany({
-            where: { carteira_id },
-            orderBy: { criado_em: "desc" },
-        });
-        return transacoes.map((t) => this.toDomain(t));
-    }
-
     async getTransacoesByFiltro(carteira_id: string, filtro: FiltroTransacao): Promise<Transacao[]> {
         const transacoes = await this.Prisma.transacao.findMany({
             where: {
