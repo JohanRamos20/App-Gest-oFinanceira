@@ -45,12 +45,12 @@ export class PrismaCarteiraRepository implements CarteiraRepository {
     async incrementCacheWalletBalance(id_carteira: string, delta: number): Promise<void> {
         const chave = CACHE_KEY(id_carteira)
         const existe = await redisClient.exists(chave)
+        
         if(!existe){
             await redisClient.set(chave, delta.toString(), {EX: TTL_SEGUNDOS})
         }
 
         await redisClient.incrByFloat(chave, delta)
-
     }
 
     async setCacheWalletBalance(id_carteira: string, novoSaldo: number): Promise<void> {
