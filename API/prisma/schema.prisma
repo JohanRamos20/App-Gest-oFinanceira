@@ -58,3 +58,14 @@ model Metas {
   usuario Usuario @relation(fields: [id_usuario], references: [id])
   @@index([id_usuario])
 }
+
+model LogAuditoria {
+  id          String   @id @default(uuid())
+  evento      String
+  id_usuario  String
+  id_entidade String
+  dados       Json
+  criado_em   DateTime @default(now())
+
+  @@map("logs_auditoria")
+}

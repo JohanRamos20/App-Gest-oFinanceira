@@ -37,6 +37,15 @@ export class PrismaCarteiraRepository implements CarteiraRepository {
 
     }
     
+    async getAllIds(): Promise<string[]> {
+        const carteiras = await this.Prisma.carteira.findMany({
+            select : {id : true}
+        })
+
+        return carteiras.map((c) => c.id)
+
+    }
+
     async getCacheWalletBalance(id_carteira: string,): Promise<number | null> {
         const valor = await redisClient.get(CACHE_KEY(id_carteira))
         return valor !== null ? parseFloat(valor) : null
