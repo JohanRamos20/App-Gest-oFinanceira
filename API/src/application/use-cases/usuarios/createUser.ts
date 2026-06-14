@@ -43,7 +43,6 @@ export class CreateUserUseCase {
 
         const userWallet = Carteira.create({
             id_usuario: usuario.id,
-            saldo_cache: 0
         });
 
         await this.carteiraRepository.createWallet(userWallet);

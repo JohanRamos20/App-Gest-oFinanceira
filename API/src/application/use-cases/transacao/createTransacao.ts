@@ -1,8 +1,11 @@
 import { TransacaoRepository } from "../../../domain/repositories/transacao-repository";
 import { CarteiraRepository } from "../../../domain/repositories/carteira-repository";
+import { eventBus } from "../../../domain/events/event-bus"
 import { Transacao, Categorias, TipoTransacao } from "../../../domain/entities/transacao";
 import { toTransacaoDto, TransacaoDto } from "../../dtos/transacao-dtos";
 import { BusinessError } from "../../../domain/errors/business-error";
+
+import { TransacaoCriadaEvent } from "../../../domain/events/transacao-criada.event";
 
 export interface CreateTransacaoRequest {
     nome: string;
@@ -33,9 +36,16 @@ export class CreateTransacaoUseCase {
 
     const transacaoCriada = await this.transacaoRepository.createTransacao(transacao);
 
-    const delta = req.tipo_transacao === TipoTransacao.CREDITO ? req.valor : -req.valor
-    await this.carteiraRepository.incrementCacheWalletBalance(carteiraExistente.id, delta)
-
+    eventBus.publish(new TransacaoCriadaEvent(
+        req.id_usuario,
+        transacaoCriada.id,
+        carteiraExistente.id,
+        transacaoCriada.valor,
+        transacaoCriada.nome,
+        transacaoCriada.categoria,
+        transacaoCriada.tipo_transacao,
+    ))
+    
     return toTransacaoDto(transacaoCriada);
 }
 }

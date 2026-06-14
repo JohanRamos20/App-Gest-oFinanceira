@@ -27,7 +27,6 @@ model Carteira {
   id String @id @default(uuid())
   id_usuario String @unique
   transacao Transacao[]
-  saldo Decimal @default(0)
 
   usuario Usuario @relation(fields: [id_usuario], references: [id])
 }

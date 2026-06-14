@@ -43,7 +43,6 @@ export class PrismaCarteiraRepository implements CarteiraRepository {
         })
 
         return carteiras.map((c) => c.id)
-
     }
 
     async getCacheWalletBalance(id_carteira: string,): Promise<number | null> {
@@ -56,7 +55,9 @@ export class PrismaCarteiraRepository implements CarteiraRepository {
         const existe = await redisClient.exists(chave)
         
         if(!existe){
-            await redisClient.set(chave, delta.toString(), {EX: TTL_SEGUNDOS})
+            const saldoAtual = await this.getSaldoByCarteira(id_carteira);
+            await redisClient.set(chave, saldoAtual.toString(), {EX: TTL_SEGUNDOS})
+            return
         }
 
         await redisClient.incrByFloat(chave, delta)
@@ -71,7 +72,6 @@ export class PrismaCarteiraRepository implements CarteiraRepository {
             data: {
                 id: props.id,
                 id_usuario: props.id_usuario,
-                saldo_cache: props.saldo_cache
             },
         });
         return this.toDomain(criada);
@@ -81,7 +81,6 @@ export class PrismaCarteiraRepository implements CarteiraRepository {
         return Carteira.createFromPrimitives({
             id: carteira.id,
             id_usuario: carteira.id_usuario,
-            saldo_cache: Number(carteira.saldo_cache),
         });
     }
 }

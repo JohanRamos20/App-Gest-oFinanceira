@@ -51,7 +51,6 @@ export class PrismaUsuarioRepository implements UsuarioRepository {
         return Carteira.createFromPrimitives({
             id: carteira.id,
             id_usuario: carteira.id_usuario,
-            saldo_cache: Number(carteira.saldo_cache),
         });
     }
 
