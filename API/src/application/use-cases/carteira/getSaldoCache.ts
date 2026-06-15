@@ -1,14 +1,14 @@
 import { BusinessError } from "../../../domain/errors/business-error";
 import { CarteiraRepository } from "../../../domain/repositories/carteira-repository";
 
-export interface getSaldoCacheRequest {
+export interface GetSaldoCacheRequest {
     id_usuario : string
 }
 
 export class GetSaldoCacheUseCase {
     constructor(private carteiraRepository : CarteiraRepository) {}
 
-    async getSaldoCache(req : getSaldoCacheRequest) : Promise<number> {
+    async getSaldoCache(req : GetSaldoCacheRequest) : Promise<number> {
 
         const carteira = await this.carteiraRepository.getByUserId(req.id_usuario);
 
