@@ -11,6 +11,5 @@ usuarioRoutes.post('/login', usuarioController.loginUser.bind(usuarioController)
 usuarioRoutes.use(authMiddleware())
 
 usuarioRoutes.patch('/usuarios/:id_usuario/senha', usuarioController.updatePassword.bind(usuarioController))
-usuarioRoutes.get('/usuarios/:id_usuario/wallet', usuarioController.userWallet.bind(usuarioController))
 
 export { usuarioRoutes };

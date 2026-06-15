@@ -40,20 +40,6 @@ export class PrismaUsuarioRepository implements UsuarioRepository {
         return this.toDomain(encontrado);
     }
 
-
-    async findWallet(id_usuario: string): Promise<Carteira | null> {
-        const carteira = await this.Prisma.carteira.findUnique({
-            where: { id_usuario },
-        });
-        if (!carteira) {
-            return null;
-        }
-        return Carteira.createFromPrimitives({
-            id: carteira.id,
-            id_usuario: carteira.id_usuario,
-        });
-    }
-
     async updatePassword(id_usuario: string, senha: string): Promise<void> {
         const usuario = await this.Prisma.usuario.update({
             where: { id: id_usuario },

@@ -1,14 +1,12 @@
 import {NextFunction, Request, Response} from "express";
 import {type CreateUserUseCase} from "../../../application/use-cases/usuarios/createUser";
 import {type UpdatePasswordUseCase} from "../../../application/use-cases/usuarios/updatePassword";
-import {type UserWalletUseCase} from "../../../application/use-cases/usuarios/userWallet";
 import {type LoginUserUseCase} from "../../../application/use-cases/usuarios/loginUser";
 import { userIdSchema, createUserSchema, loginUserSchema, updateUserPasswordSchema } from "../validators/user-validator";
 
 export interface UsuarioUseCases {
     createUser: CreateUserUseCase;
     updatePassword: UpdatePasswordUseCase;
-    userWallet: UserWalletUseCase;
     loginUser: LoginUserUseCase;
 }
 
@@ -31,18 +29,6 @@ export class UsuarioController{
             const body = updateUserPasswordSchema.parse(req.body)
             await this.usuarioUseCases.updatePassword.update({...body, id_usuario})
             res.status(200).json({message: "Senha alterada com sucesso!"})
-        }
-        catch (error) {
-            next(error)
-        }
-    }
-
-    async userWallet(req: Request, res: Response, next: NextFunction): Promise<void>{
-        try{
-            const { id_usuario } = userIdSchema.parse(req.params)
-
-            const wallet = await this.usuarioUseCases.userWallet.getUserWallet({id_usuario})
-            res.status(200).json(wallet)
         }
         catch (error) {
             next(error)
