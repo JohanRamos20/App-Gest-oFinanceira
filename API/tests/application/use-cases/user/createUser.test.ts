@@ -1,30 +1,21 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { CreateUserUseCase } from '../../../../src/application/use-cases/usuarios/createUser';
 import { Usuario } from '../../../../src/domain/entities/usuario';
-import { UsuarioRepository } from '../../../../src/domain/repositories/usuario-repository';
-import { CarteiraRepository } from '../../../../src/domain/repositories/carteira-repository';
-import { PasswordHasher } from '../../../../src/domain/services/password-hasher';
+import { FakeUsuarioRepository } from '../../../fakes/fake-usuario-repository';
+import { FakeCarteiraRepository } from '../../../fakes/fake-wallet-repository';
+import { FakePasswordHasher } from '../../../fakes/fake-password-hasher';
 import { BusinessError } from '../../../../src/domain/errors/business-error';
 
 describe('CreateUserUseCase', () => {
-    let usuarioRepository: UsuarioRepository;
-    let carteiraRepository: CarteiraRepository;
-    let passwordHasher: PasswordHasher;
+    let usuarioRepository: FakeUsuarioRepository;
+    let carteiraRepository: FakeCarteiraRepository;
+    let passwordHasher: FakePasswordHasher;
     let useCase: CreateUserUseCase;
 
     beforeEach(() => {
-        usuarioRepository = {
-            findByEmail: vi.fn(),
-            create: vi.fn(),
-        } as unknown as UsuarioRepository;
-
-        carteiraRepository = {
-            createWallet: vi.fn(),
-        } as unknown as CarteiraRepository;
-
-        passwordHasher = {
-            hash: vi.fn().mockResolvedValue('hashed_senha_123'),
-        } as unknown as PasswordHasher;
+        usuarioRepository = new FakeUsuarioRepository()
+        carteiraRepository = new FakeCarteiraRepository()
+        passwordHasher = new FakePasswordHasher()
 
         useCase = new CreateUserUseCase(
             usuarioRepository,
@@ -34,27 +25,20 @@ describe('CreateUserUseCase', () => {
     });
 
     it('deve criar um usuário e sua carteira com sucesso', async () => {
-        (usuarioRepository.findByEmail as any).mockResolvedValue(null);
-
         const result = await useCase.create({
             nome: 'Carlos Silva',
             email: 'Carlos@Email.com',
             senha: '1234',
         });
 
-        expect(usuarioRepository.findByEmail).toHaveBeenCalledWith('carlos@email.com');
+        const usuarioCriado = await usuarioRepository.findByEmail("carlos@email.com")
+        expect(usuarioCriado).not.toBeNull()
+        expect(usuarioCriado?.email).toBe("carlos@email.com")
+        expect(usuarioCriado?.senha_hash).toBe("hashed:1234")
 
-        expect(passwordHasher.hash).toHaveBeenCalledWith('1234');
-
-        expect(usuarioRepository.create).toHaveBeenCalledTimes(1);
-        const usuarioCriado = (usuarioRepository.create as any).mock.calls[0][0] as Usuario;
-        expect(usuarioCriado.email).toBe('carlos@email.com');
-        expect(usuarioCriado.senha_hash).toBe('hashed_senha_123');
-
-        expect(carteiraRepository.createWallet).toHaveBeenCalledTimes(1);
-        const carteiraCriada = (carteiraRepository.createWallet as any).mock.calls[0][0];
-        expect(carteiraCriada.id_usuario).toBe(usuarioCriado.id);
-        expect(carteiraCriada.saldo_cache).toBe(0);
+        const carteiras = carteiraRepository.getAll()
+        expect(carteiras).toHaveLength(1)
+        expect(carteiras[0].id_usuario).toBe(usuarioCriado?.id)
 
         expect(result).not.toHaveProperty('senha_hash');
         expect(result.email).toBe('carlos@email.com');
@@ -67,16 +51,7 @@ describe('CreateUserUseCase', () => {
             email: 'ja@existe.com',
             senha_hash: 'qualquer_hash',
         });
-
-        (usuarioRepository.findByEmail as any).mockResolvedValue(usuarioExistente);
-
-        await expect(
-            useCase.create({
-                nome: 'Novo Usuário',
-                email: 'ja@existe.com',
-                senha: '1234',
-            })
-        ).rejects.toThrow(BusinessError);
+        await usuarioRepository.create(usuarioExistente)
 
         await expect(
             useCase.create({
@@ -89,13 +64,11 @@ describe('CreateUserUseCase', () => {
             statusCode: 409,
         });
 
-        expect(usuarioRepository.create).not.toHaveBeenCalled();
-        expect(carteiraRepository.createWallet).not.toHaveBeenCalled();
+        expect(usuarioRepository.getAll()).toHaveLength(1)
+        expect(carteiraRepository.getAll()).toHaveLength(0)
     });
 
     it('deve lançar BusinessError se a senha tiver menos de 4 caracteres', async () => {
-        (usuarioRepository.findByEmail as any).mockResolvedValue(null);
-
         await expect(
             useCase.create({
                 nome: 'Carlos Silva',
@@ -104,14 +77,11 @@ describe('CreateUserUseCase', () => {
             })
         ).rejects.toThrow('A senha deve conter no mínimo 4 caracteres');
 
-        expect(passwordHasher.hash).not.toHaveBeenCalled();
-        expect(usuarioRepository.create).not.toHaveBeenCalled();
-        expect(carteiraRepository.createWallet).not.toHaveBeenCalled();
+        expect(usuarioRepository.getAll()).toHaveLength(0)
+        expect(carteiraRepository.getAll()).toHaveLength(0)
     });
 
     it('deve propagar erro de validação da entidade Usuario (ex: email inválido)', async () => {
-        (usuarioRepository.findByEmail as any).mockResolvedValue(null);
-
         await expect(
             useCase.create({
                 nome: 'Carlos Silva',

@@ -23,4 +23,9 @@ export class FakeUsuarioRepository implements UsuarioRepository {
             usuario.senha_hash = senha
         }
     }
+
+    getAll(): Usuario[] {
+        return [...this.usuarios]
+    }
+
 }

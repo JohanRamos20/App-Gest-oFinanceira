@@ -57,4 +57,8 @@ export class FakeCarteiraRepository implements CarteiraRepository {
         })
     }
 
+    getAll(): Carteira[] {
+    return [...this.carteiras]
+}
+
 }
