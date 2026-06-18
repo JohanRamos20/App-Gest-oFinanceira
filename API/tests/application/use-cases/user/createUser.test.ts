@@ -4,7 +4,6 @@ import { Usuario } from '../../../../src/domain/entities/usuario';
 import { FakeUsuarioRepository } from '../../../fakes/fake-usuario-repository';
 import { FakeCarteiraRepository } from '../../../fakes/fake-wallet-repository';
 import { FakePasswordHasher } from '../../../fakes/fake-password-hasher';
-import { BusinessError } from '../../../../src/domain/errors/business-error';
 
 describe('CreateUserUseCase', () => {
     let usuarioRepository: FakeUsuarioRepository;

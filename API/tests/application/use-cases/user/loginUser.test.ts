@@ -64,6 +64,7 @@ describe('LoginUserUseCase', () => {
             })
         ).rejects.toMatchObject({
             message: 'E-mail ou senha inválidos',
+            statusCode: 400
         });
     });
 
