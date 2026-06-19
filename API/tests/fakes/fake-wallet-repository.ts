@@ -1,8 +1,9 @@
 import { Carteira } from "../../src/domain/entities/carteira";
 import { CarteiraRepository } from "../../src/domain/repositories/carteira-repository";
-
+import { TipoTransacao, Transacao } from "../../src/domain/entities/transacao";
 export class FakeCarteiraRepository implements CarteiraRepository {
     private carteiras : Carteira[] = []
+    private transacoes : {id_carteira : string; valor : number; tipo : TipoTransacao}[] = []
     private cache: Map<string, { valor: number; expiresAt: number }> = new Map()
     private cacheKey = (id: string) => `carteira:saldo:${id}`
     private TTL_MS = 3600 * 1000
@@ -12,7 +13,11 @@ export class FakeCarteiraRepository implements CarteiraRepository {
     }
 
     async getSaldoByCarteira(id_carteira: string): Promise<number> {
-        return this.cache.get(this.cacheKey(id_carteira))?.valor ??0
+    return this.transacoes
+        .filter(t => t.id_carteira === id_carteira)
+        .reduce((acc, t) => {
+            return t.tipo === TipoTransacao.CREDITO ? acc + t.valor : acc - t.valor
+        }, 0)
     }
 
     async getCacheWalletBalance(id_carteira: string): Promise<number | null> {
@@ -50,11 +55,8 @@ export class FakeCarteiraRepository implements CarteiraRepository {
         return props
     }
 
-    definirSaldo(id_carteira: string, saldo: number): void {
-        this.cache.set(this.cacheKey(id_carteira), {
-            valor: saldo,
-            expiresAt: Date.now() + this.TTL_MS,
-        })
+    adicionarTransacao(id_carteira: string, valor: number, tipo: TipoTransacao): void {
+    this.transacoes.push({ id_carteira, valor, tipo })
     }
 
     getAll(): Carteira[] {
