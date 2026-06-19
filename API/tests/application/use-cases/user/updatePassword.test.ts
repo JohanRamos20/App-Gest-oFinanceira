@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { FakePasswordHasher } from "../../../fakes/fake-password-hasher";
 import { Usuario } from "../../../../src/domain/entities/usuario";
 import { UpdatePasswordUseCase } from '../../../../src/application/use-cases/usuarios/updatePassword';

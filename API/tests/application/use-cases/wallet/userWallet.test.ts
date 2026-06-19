@@ -1,18 +1,14 @@
 import { FakeCarteiraRepository } from "../../../fakes/fake-wallet-repository";
-import { FakeUsuarioRepository } from "../../../fakes/fake-usuario-repository";
 import { Carteira } from "../../../../src/domain/entities/carteira";
 import { FindWalletUseCase } from "../../../../src/application/use-cases/carteira/userWallet"
 import { describe, it, expect, beforeEach } from "vitest";
 
 describe("FindWalletUseCase", () => {
     let carteiraRepository : FakeCarteiraRepository
-    let usuarioRepository : FakeUsuarioRepository
     let useCase : FindWalletUseCase
 
     beforeEach(() => {
         carteiraRepository = new FakeCarteiraRepository
-        usuarioRepository = new FakeUsuarioRepository
-
         useCase = new FindWalletUseCase(
             carteiraRepository
         )
