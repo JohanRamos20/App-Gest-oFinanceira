@@ -34,4 +34,8 @@ export class FakeMetasRepository implements MetasRepository {
         return meta
     }
 
+    getAll(): Meta[] {
+            return [...this.metas]
+        }
+
 }
