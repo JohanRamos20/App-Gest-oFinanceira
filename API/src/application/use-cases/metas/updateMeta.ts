@@ -1,4 +1,3 @@
-import { Meta } from "../../../domain/entities/meta";
 import { BusinessError } from "../../../domain/errors/business-error";
 import { MetasRepository } from "../../../domain/repositories/meta-repository";
 
