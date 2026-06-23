@@ -1,11 +1,10 @@
 import { Usuario } from "../../domain/entities/usuario";
 import { UsuarioRepository } from "../../domain/repositories/usuario-repository";
-import { Carteira } from "../../domain/entities/carteira";
-import type { prisma } from "../../database/prisma";
 import { Usuario as PrismaUsuario } from "@prisma/client";
+import { PrismaRepositoryClient } from "../../database/prisma-repository-client";
 
 export class PrismaUsuarioRepository implements UsuarioRepository {
-    constructor(private Prisma: typeof prisma) {}
+    constructor(private Prisma: PrismaRepositoryClient) {}
 
     async create(usuario: Usuario): Promise<Usuario> {
         const criado = await this.Prisma.usuario.create({

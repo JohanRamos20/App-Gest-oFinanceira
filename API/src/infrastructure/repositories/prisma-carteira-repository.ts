@@ -1,15 +1,15 @@
 import {Carteira} from "../../domain/entities/carteira";
 import {Carteira as PrismaCarteira} from "@prisma/client";
 import {CarteiraRepository} from "../../domain/repositories/carteira-repository";
-import {prisma} from "../../database/prisma";
 import { redisClient } from "../cache/redis-client";
 import { TipoTransacao } from "../../domain/entities/transacao";
+import { PrismaRepositoryClient } from "../../database/prisma-repository-client";
 
 const CACHE_KEY = (id: string) => `carteira:saldo:${id}`;
 const TTL_SEGUNDOS = 3600;
 
 export class PrismaCarteiraRepository implements CarteiraRepository {
-    constructor(private Prisma: typeof prisma) {}
+    constructor(private Prisma: PrismaRepositoryClient) {}
 
     async getByUserId(id_usuario: string): Promise<Carteira | null> {
         const carteira = await this.Prisma.carteira.findUnique({
