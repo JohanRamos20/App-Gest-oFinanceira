@@ -28,15 +28,15 @@ export class PrismaMetaRepository implements MetasRepository {
         return metas.map((m) => this.toDomain(m));
     }
 
-    async findMetaByID(id: string): Promise<Meta | null> {
-        const meta = await this.Prisma.metas.findUnique({
-            where: { id },
+    async findMetaByID(id: string, id_usuario: string): Promise<Meta | null> {
+        const meta = await this.Prisma.metas.findFirst({
+            where: { id, id_usuario },
         });
         return meta ? this.toDomain(meta) : null;
     }
-    async updateMeta(meta: Meta): Promise<Meta> {
+    async updateMeta(meta: Meta, id_usuario: string): Promise<Meta> {
         const atualizada = await this.Prisma.metas.update({
-            where: { id: meta.id },
+            where: { id: meta.id, id_usuario },
             data: {
                 nome: meta.nome,
                 descricao: meta.descricao,
@@ -47,9 +47,9 @@ export class PrismaMetaRepository implements MetasRepository {
         return this.toDomain(atualizada);
     }
 
-    async deleteMeta(id: string): Promise<void> {
+    async deleteMeta(id: string, id_usuario: string): Promise<void> {
         await this.Prisma.metas.delete({
-            where: { id },
+            where: { id, id_usuario },
         });
     }
 

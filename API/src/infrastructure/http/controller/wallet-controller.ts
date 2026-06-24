@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import { GetSaldoCacheUseCase } from "../../../application/use-cases/carteira/getSaldoCache";
 import { FindWalletUseCase } from "../../../application/use-cases/carteira/userWallet";
-import { userIdSchema } from "../validators/user-validator"
+import { getAuthenticatedUserId } from "../helpers/get-authenticated-user-id";
 
 export interface WalletUseCases {
     getSaldoCache : GetSaldoCacheUseCase
@@ -13,7 +13,7 @@ export class WalletController {
 
     async getSaldoCache(req: Request, res: Response, next : NextFunction) : Promise<void> {
         try {
-            const { id_usuario } = userIdSchema.parse(req.params)          
+            const id_usuario = getAuthenticatedUserId(req)          
             const saldo_cache = await this.walletUseCases.getSaldoCache.getSaldoCache({id_usuario})
             res.status(200).json(saldo_cache)
         }
@@ -24,7 +24,7 @@ export class WalletController {
 
     async findUserWallet(req: Request, res: Response, next: NextFunction) : Promise <void> {
         try {
-            const { id_usuario } = userIdSchema.parse(req.params)
+            const id_usuario = getAuthenticatedUserId(req)
             const wallet = await this.walletUseCases.findUserWallet.getUserWallet({id_usuario})
             res.status(200).json(wallet)
         }

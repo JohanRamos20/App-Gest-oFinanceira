@@ -25,6 +25,10 @@ export function authMiddleware(tokenGenerator : TokenGenerator = new JwtTokenGen
             const token = extractBearerToken(request.headers.authorization)
             const payload = tokenGenerator.verify(token)
 
+            if(!payload?.id_usuario){
+                throw new BusinessError("Token inválido", 401)
+            }
+
             request.user = {
                 id_usuario : payload?.id_usuario
             }

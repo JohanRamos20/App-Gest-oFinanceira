@@ -10,6 +10,6 @@ usuarioRoutes.post('/login', usuarioController.loginUser.bind(usuarioController)
 
 usuarioRoutes.use(authMiddleware())
 
-usuarioRoutes.patch('/usuarios/:id_usuario/senha', usuarioController.updatePassword.bind(usuarioController))
+usuarioRoutes.patch('/usuarios/me/senha', usuarioController.updatePassword.bind(usuarioController))
 
 export { usuarioRoutes };

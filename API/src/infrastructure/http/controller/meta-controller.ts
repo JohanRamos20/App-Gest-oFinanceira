@@ -4,7 +4,7 @@ import { type DeleteMetaUseCase } from '../../../application/use-cases/metas/del
 import { type FindAllMetasUseCase } from '../../../application/use-cases/metas/findAllMetas';
 import { type UpdateMetaUseCase } from '../../../application/use-cases/metas/updateMeta';
 import { metaIdSchema, createMetaSchema, updateMetaSchema } from '../validators/meta-validator';
-import { userIdSchema } from '../validators/user-validator';
+import { getAuthenticatedUserId } from '../helpers/get-authenticated-user-id';
 
 export interface MetaUseCases {
     createMeta: CreateMetaUseCase;
@@ -18,7 +18,7 @@ export class MetaController {
 
     async createMeta(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id_usuario } = userIdSchema.parse(req.params);
+            const id_usuario = getAuthenticatedUserId(req);
             const body = createMetaSchema.parse(req.body)
             const meta = await this.metasUseCases.createMeta.create({
                 ...body,
@@ -34,12 +34,13 @@ export class MetaController {
     async updateMeta(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
 
+            const id_usuario = getAuthenticatedUserId(req);
             const { id_meta }  = metaIdSchema.parse(req.params);
             const body = updateMetaSchema.parse(req.body)
             const resultadosUpdateMeta = await this.metasUseCases.updateMeta.update({
                 ...body,
                 id_meta,
-                
+                id_usuario,
             });
             res.status(200).json(resultadosUpdateMeta);
         }
@@ -50,8 +51,9 @@ export class MetaController {
 
     async deleteMeta(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
+            const id_usuario = getAuthenticatedUserId(req);
             const {id_meta} = metaIdSchema.parse(req.params);
-            await this.metasUseCases.deleteMeta.delete({id_meta});
+            await this.metasUseCases.deleteMeta.delete({id_meta, id_usuario});
             res.status(200).json({message: "Meta deletada com sucesso!"});
         }
         catch (error) {
@@ -61,7 +63,7 @@ export class MetaController {
 
     async findAllMetas(req: Request, res: Response, next: NextFunction): Promise<void> {
         try{
-            const { id_usuario } = userIdSchema.parse(req.params)
+            const id_usuario = getAuthenticatedUserId(req)
             const metas = await this.metasUseCases.findAllMetas.findAll({id_usuario});
             res.status(200).json(metas);
         }

@@ -7,7 +7,7 @@ const walletController = makeWalletFactory()
 
 walletRoutes.use(authMiddleware())
 
-walletRoutes.get('/usuarios/:id_usuario/wallet', walletController.findUserWallet.bind(walletController))
-walletRoutes.get('/usuarios/:id_usuario/wallet/saldo', walletController.getSaldoCache.bind(walletController))
+walletRoutes.get('/usuarios/me/wallet', walletController.findUserWallet.bind(walletController))
+walletRoutes.get('/usuarios/me/wallet/saldo', walletController.getSaldoCache.bind(walletController))
 
 export { walletRoutes }

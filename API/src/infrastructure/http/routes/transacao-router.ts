@@ -7,6 +7,6 @@ const transacaoController = makeTransacaoController();
 
 transacaoRoutes.use(authMiddleware())
 
-transacaoRoutes.post('/usuarios/:id_usuario/transacoes', transacaoController.createTransacao.bind(transacaoController))
-transacaoRoutes.get('/usuarios/:id_usuario/transacoes', transacaoController.findTransacaoTypes.bind(transacaoController))
+transacaoRoutes.post('/usuarios/me/transacoes', transacaoController.createTransacao.bind(transacaoController))
+transacaoRoutes.get('/usuarios/me/transacoes', transacaoController.findTransacaoTypes.bind(transacaoController))
 export { transacaoRoutes };

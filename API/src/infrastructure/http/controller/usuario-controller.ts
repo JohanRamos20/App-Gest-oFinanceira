@@ -2,7 +2,8 @@ import {NextFunction, Request, Response} from "express";
 import {type CreateUserUseCase} from "../../../application/use-cases/usuarios/createUser";
 import {type UpdatePasswordUseCase} from "../../../application/use-cases/usuarios/updatePassword";
 import {type LoginUserUseCase} from "../../../application/use-cases/usuarios/loginUser";
-import { userIdSchema, createUserSchema, loginUserSchema, updateUserPasswordSchema } from "../validators/user-validator";
+import { createUserSchema, loginUserSchema, updateUserPasswordSchema } from "../validators/user-validator";
+import { getAuthenticatedUserId } from "../helpers/get-authenticated-user-id";
 
 export interface UsuarioUseCases {
     createUser: CreateUserUseCase;
@@ -25,7 +26,7 @@ export class UsuarioController{
 
     async updatePassword(req: Request, res: Response, next: NextFunction): Promise<void>{
         try{
-            const { id_usuario } = userIdSchema.parse(req.params)
+            const id_usuario = getAuthenticatedUserId(req)
             const body = updateUserPasswordSchema.parse(req.body)
             await this.usuarioUseCases.updatePassword.update({...body, id_usuario})
             res.status(200).json({message: "Senha alterada com sucesso!"})
