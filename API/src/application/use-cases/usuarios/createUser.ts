@@ -1,7 +1,6 @@
 import { toUsuarioDto, UsuarioDto } from '../../dtos/usuario-dtos';
 import { Usuario } from "../../../domain/entities/usuario";
-import { UsuarioRepository } from "../../../domain/repositories/usuario-repository";
-import { CarteiraRepository } from "../../../domain/repositories/carteira-repository";
+import { ITransactionManager } from '../../../domain/managers/ITransactionManager';
 import { Carteira } from "../../../domain/entities/carteira";
 import { PasswordHasher } from '../../../domain/services/password-hasher';
 import { BusinessError } from '../../../domain/errors/business-error';
@@ -13,19 +12,13 @@ export interface CreateUserRequest{
 }
 
 export class CreateUserUseCase {
-    constructor(private usuarioRepository: UsuarioRepository,
-        private carteiraRepository: CarteiraRepository,
+    constructor(private transactionManager : ITransactionManager,
         private passwordHasher: PasswordHasher
     ) {}
 
     async create (req: CreateUserRequest) : Promise<UsuarioDto> {
 
         const email = req.email.trim().toLowerCase()
-        
-        const usuarioExistente =  await this.usuarioRepository.findByEmail(email);
-        if(usuarioExistente) {
-            throw new BusinessError("Email já cadastrado", 409);
-        }
 
         if(req.senha.length < 4) {
             throw new BusinessError("A senha deve conter no mínimo 4 caracteres");
@@ -38,15 +31,25 @@ export class CreateUserUseCase {
             email: email,
             senha_hash: hashedPassword
         });
-        
-        await this.usuarioRepository.create(usuario);
 
         const userWallet = Carteira.create({
             id_usuario: usuario.id,
         });
 
-        await this.carteiraRepository.createWallet(userWallet);
+         return this.transactionManager.execute(
+            async ({usuarioRepository, carteiraRepository}) => {
+                const existente = await usuarioRepository.findByEmail(email);
 
-        return toUsuarioDto(usuario);
+                if(existente) {
+                    throw new BusinessError("Email já cadastrado", 409)
+                }
+
+                await usuarioRepository.create(usuario)
+                await carteiraRepository.createWallet(userWallet)
+
+                return toUsuarioDto(usuario);
+
+            }
+        )
     }
 }

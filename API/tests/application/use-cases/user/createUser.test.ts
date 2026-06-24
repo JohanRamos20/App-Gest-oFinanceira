@@ -4,21 +4,28 @@ import { Usuario } from '../../../../src/domain/entities/usuario';
 import { FakeUsuarioRepository } from '../../../fakes/fake-usuario-repository';
 import { FakeCarteiraRepository } from '../../../fakes/fake-wallet-repository';
 import { FakePasswordHasher } from '../../../fakes/fake-password-hasher';
+import { FakeTransactionManager } from '../../../fakes/fake-transaction-manager';
 
 describe('CreateUserUseCase', () => {
     let usuarioRepository: FakeUsuarioRepository;
     let carteiraRepository: FakeCarteiraRepository;
+    let transactionManager : FakeTransactionManager
     let passwordHasher: FakePasswordHasher;
     let useCase: CreateUserUseCase;
 
     beforeEach(() => {
+
         usuarioRepository = new FakeUsuarioRepository()
         carteiraRepository = new FakeCarteiraRepository()
+
+        transactionManager = new FakeTransactionManager({
+            usuarioRepository,
+            carteiraRepository
+        })
         passwordHasher = new FakePasswordHasher()
 
         useCase = new CreateUserUseCase(
-            usuarioRepository,
-            carteiraRepository,
+            transactionManager,
             passwordHasher
         );
     });
