@@ -1,9 +1,19 @@
-import { Config, ITransactionManager, TransactionCallback, UnitOfWork } from "../../src/domain/managers/ITransactionManager"
+﻿import {
+    TransactionCallback,
+    TransactionConfig,
+    TransactionManager,
+    UnitOfWork,
+} from "../../src/domain/managers/transaction-manager";
 
-export class FakeTransactionManager implements ITransactionManager {
-    constructor(private readonly uow : UnitOfWork) {}
+export class FakeTransactionManager implements TransactionManager {
+    constructor(private readonly unitOfWork: UnitOfWork) {}
 
-    async execute<T>(action: TransactionCallback<T>, config?: Config): Promise<T> {
-        return action(this.uow)
+    execute<T>(
+        action: TransactionCallback<T>,
+        _config?: TransactionConfig,
+    ): Promise<T> {
+        return action(this.unitOfWork);
     }
 }
+
+

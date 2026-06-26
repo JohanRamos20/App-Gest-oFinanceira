@@ -1,34 +1,36 @@
-import { PrismaClient} from '@prisma/client'
-import { prisma } from "./prisma"
-import { PrismaUnitOfWork } from './prisma-unit-of-work';
-import { ITransactionManager, TransactionConfig, TransactionCallback  } from '../domain/managers/ITransactionManager'
+import { PrismaClient } from "@prisma/client";
+import {
+    TransactionCallback,
+    TransactionConfig,
+    TransactionManager,
+} from "../domain/managers/transaction-manager";
+import { prisma } from "./prisma";
+import { PrismaUnitOfWork } from "./prisma-unit-of-work";
 
 const DEFAULT_CONFIG: Required<TransactionConfig> = {
-    timeout: 30000,
-    isolationLevel: "ReadCommitted"
+    timeout: 30_000,
+    isolationLevel: "ReadCommitted",
 };
 
-export class PrismaTransactionManager implements ITransactionManager{
-    constructor(
-        private readonly transactionClient : PrismaClient = prisma,
-        private readonly config : TransactionConfig = DEFAULT_CONFIG
-    ) {}
+export class PrismaTransactionManager implements TransactionManager {
+    private readonly config: Required<TransactionConfig>;
 
-    async execute<T>(
-        action : TransactionCallback<T>,
-        config? : TransactionConfig
-    ) : Promise<T>{
-        return this.transactionClient.$transaction(
-            async (tx) => {
-                const unitOfWork = new PrismaUnitOfWork(tx)
-                return action(unitOfWork);
-            },
-            {
-                ...this.config,
-                ...config,
-            }
-        )
+    constructor(
+        private readonly client: PrismaClient = prisma,
+        config: TransactionConfig = {},
+    ) {
+        this.config = { ...DEFAULT_CONFIG, ...config };
     }
 
+    execute<T>(
+        action: TransactionCallback<T>,
+        config?: TransactionConfig,
+    ): Promise<T> {
+        return this.client.$transaction(
+            async (transactionClient) => {
+                return action(new PrismaUnitOfWork(transactionClient));
+            },
+            { ...this.config, ...config },
+        );
+    }
 }
-

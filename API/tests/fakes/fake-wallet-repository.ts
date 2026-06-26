@@ -1,66 +1,76 @@
-import { Carteira } from "../../src/domain/entities/carteira";
-import { CarteiraRepository } from "../../src/domain/repositories/carteira-repository";
-import { TipoTransacao, Transacao } from "../../src/domain/entities/transacao";
-export class FakeCarteiraRepository implements CarteiraRepository {
-    private carteiras : Carteira[] = []
-    private transacoes : {id_carteira : string; valor : number; tipo : TipoTransacao}[] = []
-    private cache: Map<string, { valor: number; expiresAt: number }> = new Map()
-    private cacheKey = (id: string) => `carteira:saldo:${id}`
-    private TTL_MS = 3600 * 1000
+﻿import { TransactionType } from "../../src/domain/entities/transaction";
+import { Wallet } from "../../src/domain/entities/wallet";
+import { WalletRepository } from "../../src/domain/repositories/wallet-repository";
 
-    async getByUserId(id_usuario: string): Promise<Carteira | null> {
-        return this.carteiras.find(u => u.id_usuario === id_usuario) ?? null
-    }
-
-    async getSaldoByCarteira(id_carteira: string): Promise<number> {
-    return this.transacoes
-        .filter(t => t.id_carteira === id_carteira)
-        .reduce((acc, t) => {
-            return t.tipo === TipoTransacao.CREDITO ? acc + t.valor : acc - t.valor
-        }, 0)
-    }
-
-    async getCacheWalletBalance(id_carteira: string): Promise<number | null> {
-        const entrada = this.cache.get(this.cacheKey(id_carteira))
-        if (!entrada) return null
-        if (Date.now() > entrada.expiresAt) {
-            this.cache.delete(this.cacheKey(id_carteira))
-            return null
-        }
-        return entrada.valor
-    }
-
-    async incrementCacheWalletBalance(id_carteira: string, delta: number): Promise<void> {
-        const chave = this.cacheKey(id_carteira)
-        const entrada = this.cache.get(chave)
-
-        if (!entrada) {
-            const saldoAtual = await this.getSaldoByCarteira(id_carteira)
-            this.cache.set(chave, { valor: saldoAtual, expiresAt: Date.now() + this.TTL_MS })
-            return
-        }
-
-        entrada.valor += delta
-    }
-
-    async setCacheWalletBalance(id_carteira: string, novoSaldo: number): Promise<void> {
-        this.cache.set(this.cacheKey(id_carteira), {
-            valor: novoSaldo,
-            expiresAt: Date.now() + this.TTL_MS,
-        })
-    }
-
-     async createWallet(props: Carteira): Promise<Carteira> {
-        this.carteiras.push(props)
-        return props
-    }
-
-    adicionarTransacao(id_carteira: string, valor: number, tipo: TipoTransacao): void {
-    this.transacoes.push({ id_carteira, valor, tipo })
-    }
-
-    getAll(): Carteira[] {
-    return [...this.carteiras]
+interface StoredTransaction {
+    walletId: string;
+    amount: number;
+    transactionType: TransactionType;
 }
 
+export class FakeWalletRepository implements WalletRepository {
+    private readonly wallets: Wallet[] = [];
+    private readonly transactions: StoredTransaction[] = [];
+    private readonly cache = new Map<string, { balance: number; expiresAt: number }>();
+    private readonly cacheTtlMs = 3_600_000;
+
+    async findByUserId(userId: string): Promise<Wallet | null> {
+        return this.wallets.find(wallet => wallet.userId === userId) ?? null;
+    }
+
+    async calculateBalance(walletId: string): Promise<number> {
+        return this.transactions
+            .filter(transaction => transaction.walletId === walletId)
+            .reduce((balance, transaction) => {
+                return transaction.transactionType === TransactionType.CREDIT
+                    ? balance + transaction.amount
+                    : balance - transaction.amount;
+            }, 0);
+    }
+
+    async getCachedBalance(walletId: string): Promise<number | null> {
+        const entry = this.cache.get(this.cacheKey(walletId));
+        if (!entry) return null;
+        if (Date.now() > entry.expiresAt) {
+            this.cache.delete(this.cacheKey(walletId));
+            return null;
+        }
+        return entry.balance;
+    }
+
+    async incrementCachedBalance(walletId: string, delta: number): Promise<void> {
+        const key = this.cacheKey(walletId);
+        const entry = this.cache.get(key);
+        if (!entry) {
+            await this.setCachedBalance(walletId, await this.calculateBalance(walletId));
+            return;
+        }
+        entry.balance += delta;
+    }
+
+    async setCachedBalance(walletId: string, balance: number): Promise<void> {
+        this.cache.set(this.cacheKey(walletId), {
+            balance,
+            expiresAt: Date.now() + this.cacheTtlMs,
+        });
+    }
+
+    async create(wallet: Wallet): Promise<Wallet> {
+        this.wallets.push(wallet);
+        return wallet;
+    }
+
+    addTransaction(walletId: string, amount: number, transactionType: TransactionType): void {
+        this.transactions.push({ walletId, amount, transactionType });
+    }
+
+    getAll(): Wallet[] {
+        return [...this.wallets];
+    }
+
+    private cacheKey(walletId: string): string {
+        return `wallet:balance:${walletId}`;
+    }
 }
+
+

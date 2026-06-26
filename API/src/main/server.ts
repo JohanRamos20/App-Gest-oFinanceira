@@ -1,4 +1,4 @@
-import { app } from "./app"
+﻿import { app } from "./app"
 import { connectRedis } from "../infrastructure/cache/redis-client";
 import { makeListeners } from "../infrastructure/http/factories/listeners-factory";
 
@@ -18,3 +18,4 @@ async function bootstrap() {
 }
 
 bootstrap()
+

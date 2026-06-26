@@ -1,4 +1,4 @@
-import { type NextFunction, type Request, type Response } from "express";
+﻿import { type NextFunction, type Request, type Response } from "express";
 import { type TokenGenerator} from "../../../domain/services/token-generator";
 import { JwtTokenGenerator } from "../../services/jwt-token-generator";
 import { BusinessError } from "../../../domain/errors/business-error";
@@ -6,7 +6,7 @@ import { BusinessError } from "../../../domain/errors/business-error";
 export function extractBearerToken(authorizationHeader?: string) : string {
 
     if(!authorizationHeader){
-        throw new BusinessError("Token não informado",401)
+        throw new BusinessError("Token não informado", 401)
     }
 
     const [schema, token] = authorizationHeader.split(' ')
@@ -25,12 +25,12 @@ export function authMiddleware(tokenGenerator : TokenGenerator = new JwtTokenGen
             const token = extractBearerToken(request.headers.authorization)
             const payload = tokenGenerator.verify(token)
 
-            if(!payload?.id_usuario){
+            if(!payload?.userId){
                 throw new BusinessError("Token inválido", 401)
             }
 
             request.user = {
-                id_usuario : payload?.id_usuario
+                userId: payload.userId
             }
             next()
         }
@@ -39,3 +39,4 @@ export function authMiddleware(tokenGenerator : TokenGenerator = new JwtTokenGen
         }
     }
 }
+

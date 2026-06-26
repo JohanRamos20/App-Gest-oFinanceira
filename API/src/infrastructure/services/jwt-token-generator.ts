@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken';
+﻿import * as jwt from 'jsonwebtoken';
 import { TokenGenerator } from '../../domain/services/token-generator';
 
 const EXPIRES_IN = '1d';
@@ -18,12 +18,20 @@ export class JwtTokenGenerator implements TokenGenerator {
         this.secretKey = getSecretKey();
     }
 
-    generate(payload: { id_usuario: string }): string {
+    generate(payload: { userId: string }): string {
         return jwt.sign(payload, this.secretKey, { expiresIn: EXPIRES_IN });
     }
 
-    verify(token: string): { id_usuario: string } | null {
-        return jwt.verify(token, this.secretKey) as { id_usuario: string };
-
+    verify(token: string): { userId: string } | null {
+        try {
+            const payload = jwt.verify(token, this.secretKey);
+            if (typeof payload === "string" || typeof payload.userId !== "string") {
+                return null;
+            }
+            return { userId: payload.userId };
+        } catch {
+            return null;
+        }
     }
 }
+

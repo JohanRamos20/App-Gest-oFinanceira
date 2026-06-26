@@ -1,46 +1,46 @@
-import { it, expect, describe } from 'vitest'
-import { Transacao, Categorias, TipoTransacao} from '../../../src/domain/entities/transacao'
+﻿import { it, expect, describe } from 'vitest'
+import { Transaction, Category, TransactionType} from '../../../src/domain/entities/transaction'
 
-describe('Transacao', () =>{
+describe('Transaction', () =>{
 
 
-    const dadosValidos = {
-        nome : 'transacao_teste',
-        id_carteira : 'id_carteira',
-        valor : 100,
-        categoria : 'LAZER' as Categorias,
-        tipo_transacao : 'DEBITO' as TipoTransacao
+    const validProperties = {
+        name : 'transaction_teste',
+        walletId : 'walletId',
+        amount : 100,
+        category: Category.LEISURE,
+        transactionType: TransactionType.DEBIT,
     }
 
     describe('Create()', () => {
 
         it('Deve ser capaz de criar uma transação', () => {
-            const transacao = Transacao.create(dadosValidos)
-            expect(transacao.nome).toBe('transacao_teste')
-            expect(transacao.id_carteira).toBe('id_carteira')
-            expect(transacao.valor).toBe(100)
-            expect(transacao.categoria).toBe('LAZER')
-            expect(transacao.tipo_transacao).toBe('DEBITO')
+            const transaction = Transaction.create(validProperties)
+            expect(transaction.name).toBe('transaction_teste')
+            expect(transaction.walletId).toBe('walletId')
+            expect(transaction.amount).toBe(100)
+            expect(transaction.category).toBe(Category.LEISURE)
+            expect(transaction.transactionType).toBe(TransactionType.DEBIT)
         })
 
         it('Uma transação deve ter um id', () => {
-            const transacao = Transacao.create(dadosValidos)
-            expect(transacao.id).toBeDefined()
-            expect(typeof transacao.id).toBe('string')
-            expect(transacao.id.length).toBeGreaterThan(0)
+            const transaction = Transaction.create(validProperties)
+            expect(transaction.id).toBeDefined()
+            expect(typeof transaction.id).toBe('string')
+            expect(transaction.id.length).toBeGreaterThan(0)
         })
 
     })
 
-    describe('Create() - validação de valor', () => {
+    describe('Create() - validação de amount', () => {
         it('Valor deve ser maior que zero', () =>{
-            expect(() => Transacao.create({...dadosValidos, valor : 0})).toThrow('O valor da transação deve ser maior que zero')
+            expect(() => Transaction.create({...validProperties, amount : 0})).toThrow('O valor da transação deve ser maior que zero')
         })
     })
 
-    describe('Create() - validação de nome', () => {
-        it('A transação tem que ter nome', () =>{
-            expect(() => Transacao.create({...dadosValidos, nome: ''})).toThrow('O nome da transação não pode ser vazio')
+    describe('Create() - validação de name', () => {
+        it('A transação tem que ter name', () =>{
+            expect(() => Transaction.create({...validProperties, name: ''})).toThrow('O nome da transação não pode ser vazio')
         })
     })
 
@@ -49,25 +49,29 @@ describe('Transacao', () =>{
         it('deve recriar uma transação a partir de dados primitivos', () => {
           const data = new Date('2024-01-01')
     
-          const transacao = Transacao.createFromPrimitives({
+          const transaction = Transaction.createFromPrimitives({
             id: 'uuid-123',
-            id_carteira : 'uuid_carteira',
-            nome: 'Syssa',
-            valor : 100,
-            categoria : 'LAZER',
-            tipo_transacao : 'DEBITO',
-            criado_em : data
+            walletId : 'uuwalletId',
+            name: 'Syssa',
+            amount : 100,
+            category: Category.LEISURE,
+            transactionType: TransactionType.DEBIT,
+            createdAt : data
           })
     
-          expect(transacao.id).toBe('uuid-123')
-          expect(transacao.id_carteira).toBe('uuid_carteira')
-          expect(transacao.nome).toBe('Syssa')
-          expect(transacao.valor).toBe(100)
-          expect(transacao.categoria).toBe('LAZER')
-          expect(transacao.tipo_transacao).toBe('DEBITO')
-          expect(transacao.criado_em).toEqual(data)
+          expect(transaction.id).toBe('uuid-123')
+          expect(transaction.walletId).toBe('uuwalletId')
+          expect(transaction.name).toBe('Syssa')
+          expect(transaction.amount).toBe(100)
+          expect(transaction.category).toBe(Category.LEISURE)
+          expect(transaction.transactionType).toBe(TransactionType.DEBIT)
+          expect(transaction.createdAt).toEqual(data)
         })
     
       })
 
 })
+
+
+
+

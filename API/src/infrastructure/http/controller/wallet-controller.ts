@@ -1,36 +1,35 @@
-import {NextFunction, Request, Response} from "express";
-import { GetSaldoCacheUseCase } from "../../../application/use-cases/carteira/getSaldoCache";
-import { FindWalletUseCase } from "../../../application/use-cases/carteira/userWallet";
+import { NextFunction, Request, Response } from "express";
+import { FindWalletUseCase } from "../../../application/use-cases/wallet/find-wallet";
+import { GetCachedBalanceUseCase } from "../../../application/use-cases/wallet/get-cached-balance";
 import { getAuthenticatedUserId } from "../helpers/get-authenticated-user-id";
 
 export interface WalletUseCases {
-    getSaldoCache : GetSaldoCacheUseCase
-    findUserWallet : FindWalletUseCase
+    find: FindWalletUseCase;
+    getBalance: GetCachedBalanceUseCase;
 }
 
 export class WalletController {
-    constructor(private readonly walletUseCases : WalletUseCases) {}
+    constructor(private readonly useCases: WalletUseCases) {}
 
-    async getSaldoCache(req: Request, res: Response, next : NextFunction) : Promise<void> {
+    async find(request: Request, response: Response, next: NextFunction): Promise<void> {
         try {
-            const id_usuario = getAuthenticatedUserId(req)          
-            const saldo_cache = await this.walletUseCases.getSaldoCache.getSaldoCache({id_usuario})
-            res.status(200).json(saldo_cache)
-        }
-        catch (error) {
-            next(error)
+            const wallet = await this.useCases.find.execute({
+                userId: getAuthenticatedUserId(request),
+            });
+            response.status(200).json(wallet);
+        } catch (error) {
+            next(error);
         }
     }
 
-    async findUserWallet(req: Request, res: Response, next: NextFunction) : Promise <void> {
+    async getBalance(request: Request, response: Response, next: NextFunction): Promise<void> {
         try {
-            const id_usuario = getAuthenticatedUserId(req)
-            const wallet = await this.walletUseCases.findUserWallet.getUserWallet({id_usuario})
-            res.status(200).json(wallet)
-        }
-        catch(error){
-            next(error)
+            const balance = await this.useCases.getBalance.execute({
+                userId: getAuthenticatedUserId(request),
+            });
+            response.status(200).json({ balance });
+        } catch (error) {
+            next(error);
         }
     }
-
 }

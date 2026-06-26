@@ -1,13 +1,12 @@
-import { Router } from 'express'
-import { makeWalletFactory } from '../factories/wallet-factory'
-import { authMiddleware } from '../middleware/auth-middleware'
+import { Router } from "express";
+import { makeWalletController } from "../factories/wallet-factory";
+import { authMiddleware } from "../middleware/auth-middleware";
 
-const walletRoutes = Router()
-const walletController = makeWalletFactory()
+const walletRoutes = Router();
+const controller = makeWalletController();
 
-walletRoutes.use(authMiddleware())
+walletRoutes.use(authMiddleware());
+walletRoutes.get("/users/me/wallet", controller.find.bind(controller));
+walletRoutes.get("/users/me/wallet/balance", controller.getBalance.bind(controller));
 
-walletRoutes.get('/usuarios/me/wallet', walletController.findUserWallet.bind(walletController))
-walletRoutes.get('/usuarios/me/wallet/saldo', walletController.getSaldoCache.bind(walletController))
-
-export { walletRoutes }
+export { walletRoutes };

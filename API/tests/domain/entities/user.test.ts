@@ -1,55 +1,55 @@
-import { it, describe, expect } from 'vitest'
-import { Usuario } from '../../../src/domain/entities/usuario'
+﻿import { it, describe, expect } from 'vitest'
+import { User } from '../../../src/domain/entities/user'
 
-describe('Usuario', () =>{
-    const dadosValidos = {
-        nome: "João Silva",
+describe('User', () =>{
+    const validProperties = {
+        name: "João Silva",
         email: "joão@gmail.com",
-        senha_hash: "senha123"
+        passwordHash: "password123"
     }
 
     describe ('create()', () => {
-        it('Deve criar um usuario válido', () => {
-            const usuario = Usuario.create(dadosValidos)
+        it('Deve criar um user válido', () => {
+            const user = User.create(validProperties)
 
-            expect(usuario.nome).toBe('João Silva')
-            expect(usuario.email).toBe('joão@gmail.com')
-            expect(usuario.senha_hash).toBe('senha123')
+            expect(user.name).toBe('João Silva')
+            expect(user.email).toBe('joão@gmail.com')
+            expect(user.passwordHash).toBe('password123')
         })
         it('Deve gerar um id', () => {
-            const usuario = Usuario.create(dadosValidos)
+            const user = User.create(validProperties)
 
-            expect(usuario.id).toBeDefined()
-            expect(typeof usuario.id).toBe('string')
-            expect(usuario.id.length).toBeGreaterThan(0)
+            expect(user.id).toBeDefined()
+            expect(typeof user.id).toBe('string')
+            expect(user.id.length).toBeGreaterThan(0)
         })
-        it('Deve definir criado_em', () => {
-            const usuario = Usuario.create(dadosValidos)
-            expect(usuario.criado_em).toBeInstanceOf(Date)
+        it('Deve definir createdAt', () => {
+            const user = User.create(validProperties)
+            expect(user.createdAt).toBeInstanceOf(Date)
         })
     })
 
-    describe('create() - validação de nome', () =>{
+    describe('create() - validação de name', () =>{
         it('Nome não pode ser vazio', () => {
-            expect( () => Usuario.create({ ...dadosValidos, nome:'' })).toThrow( 'O nome é obrigatório' )
+            expect( () => User.create({ ...validProperties, name:'' })).toThrow( 'O nome é obrigatório' )
         })
     })
     describe('create() — validação de email', () => {
 
     it('deve lançar erro se o email não tiver @', () => {
       expect(() =>
-        Usuario.create({ ...dadosValidos, email: 'emailsemarroba.com' })).toThrow('O email é inválido')
+        User.create({ ...validProperties, email: 'emailsemarroba.com' })).toThrow('O email é inválido')
         })
 
     it('deve lançar erro se o email não tiver domínio', () => {
       expect(() =>
-        Usuario.create({ ...dadosValidos, email: 'email@' })
+        User.create({ ...validProperties, email: 'email@' })
       ).toThrow('O email é inválido')
         })
 
     it('deve lançar erro se o email tiver espaços', () => {
       expect(() =>
-        Usuario.create({ ...dadosValidos, email: 'email @email.com' })
+        User.create({ ...validProperties, email: 'email @email.com' })
       ).toThrow('O email é inválido')
         })
     })    
@@ -59,20 +59,24 @@ describe('Usuario', () =>{
     it('deve recriar um usuário a partir de dados primitivos', () => {
       const data = new Date('2024-01-01')
 
-      const usuario = Usuario.createFromPrimitives({
+      const user = User.createFromPrimitives({
         id: 'uuid-123',
-        nome: 'Maria',
+        name: 'Maria',
         email: 'maria@email.com',
-        senha_hash: 'hash_456',
-        criado_em: data,
+        passwordHash: 'hash_456',
+        createdAt: data,
       })
 
-      expect(usuario.id).toBe('uuid-123')
-      expect(usuario.nome).toBe('Maria')
-      expect(usuario.email).toBe('maria@email.com')
-      expect(usuario.criado_em).toEqual(data)
+      expect(user.id).toBe('uuid-123')
+      expect(user.name).toBe('Maria')
+      expect(user.email).toBe('maria@email.com')
+      expect(user.createdAt).toEqual(data)
     })
 
   })
 
 })
+
+
+
+

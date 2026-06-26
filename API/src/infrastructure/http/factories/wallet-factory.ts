@@ -1,16 +1,17 @@
-import { PrismaCarteiraRepository } from "../../repositories/prisma-carteira-repository";
+﻿import { PrismaWalletRepository } from "../../repositories/prisma-wallet-repository";
 import { WalletController } from "../controller/wallet-controller";
-import { FindWalletUseCase } from "../../../application/use-cases/carteira/userWallet";
-import { GetSaldoCacheUseCase } from "../../../application/use-cases/carteira/getSaldoCache";
+import { FindWalletUseCase } from "../../../application/use-cases/wallet/find-wallet";
+import { GetCachedBalanceUseCase } from "../../../application/use-cases/wallet/get-cached-balance";
 import { prisma } from "../../../database/prisma";
 
-export function makeWalletFactory(): WalletController {
+export function makeWalletController(): WalletController {
 
-    const walletRepository = new PrismaCarteiraRepository(prisma)
+    const walletRepository = new PrismaWalletRepository(prisma)
 
     return new WalletController({
-        findUserWallet : new FindWalletUseCase(walletRepository),
-        getSaldoCache : new GetSaldoCacheUseCase(walletRepository)
+        find: new FindWalletUseCase(walletRepository),
+        getBalance: new GetCachedBalanceUseCase(walletRepository)
     })
 
 }
+

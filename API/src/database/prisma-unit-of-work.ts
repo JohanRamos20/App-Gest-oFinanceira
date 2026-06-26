@@ -1,14 +1,16 @@
-import { UnitOfWork } from "../domain/managers/ITransactionManager";
-import { PrismaUsuarioRepository } from "../infrastructure/repositories/prisma-usuario-repository";
-import { PrismaCarteiraRepository } from "../infrastructure/repositories/prisma-carteira-repository";
+import { UnitOfWork } from "../domain/managers/transaction-manager";
+import { UserRepository } from "../domain/repositories/user-repository";
+import { WalletRepository } from "../domain/repositories/wallet-repository";
+import { PrismaUserRepository } from "../infrastructure/repositories/prisma-user-repository";
+import { PrismaWalletRepository } from "../infrastructure/repositories/prisma-wallet-repository";
 import { PrismaRepositoryClient } from "./prisma-repository-client";
 
-export class PrismaUnitOfWork implements UnitOfWork{
-    readonly usuarioRepository : PrismaUsuarioRepository;
-    readonly carteiraRepository: PrismaCarteiraRepository;
+export class PrismaUnitOfWork implements UnitOfWork {
+    readonly userRepository: UserRepository;
+    readonly walletRepository: WalletRepository;
 
-    constructor(tx: PrismaRepositoryClient){
-        this.usuarioRepository = new PrismaUsuarioRepository(tx)
-        this.carteiraRepository = new PrismaCarteiraRepository(tx)
+    constructor(client: PrismaRepositoryClient) {
+        this.userRepository = new PrismaUserRepository(client);
+        this.walletRepository = new PrismaWalletRepository(client);
     }
 }

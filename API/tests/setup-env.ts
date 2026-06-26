@@ -1,4 +1,4 @@
-import { config } from "dotenv"
+﻿import { config } from "dotenv"
 
 const result = config({
     path: ".env.test",
@@ -20,3 +20,7 @@ if (!databaseName.endsWith("_test")) {
         `Testes não podem executar no banco "${databaseName}"`
     );
 }
+
+
+
+

@@ -1,32 +1,35 @@
-import { it, expect, describe } from 'vitest'
-import { Carteira } from '../../../src/domain/entities/carteira'
+﻿import { it, expect, describe } from 'vitest'
+import { Wallet } from '../../../src/domain/entities/wallet'
 
-describe ('Carteira', () =>{
-    const dadosValidos = {
-        id_usuario : 'uuid_usuario',
+describe ('Wallet', () =>{
+    const validProperties = {
+        userId : 'uuuserId',
     }
 
     describe('create()', () =>{
-        it('Deve criar uma carteira', () =>{
-            const carteira = Carteira.create(dadosValidos)
-            expect(carteira.id_usuario).toBe('uuid_usuario')
+        it('Deve criar uma wallet', () =>{
+            const wallet = Wallet.create(validProperties)
+            expect(wallet.userId).toBe('uuuserId')
         })
         it('Deve gerar um id', () => {
-            const carteira = Carteira.create(dadosValidos)
-            expect(carteira.id).toBeDefined()
-            expect(typeof carteira.id).toBe('string')
-            expect(carteira.id.length).toBeGreaterThan(0)
+            const wallet = Wallet.create(validProperties)
+            expect(wallet.id).toBeDefined()
+            expect(typeof wallet.id).toBe('string')
+            expect(wallet.id.length).toBeGreaterThan(0)
         })
     })
 
     describe('createFromPrimitives()', () => {
-        it('Deve recriar uma carteira a partir de dados primitivos', () => {
-            const carteira = Carteira.createFromPrimitives({
+        it('Deve recriar uma wallet a partir de dados primitivos', () => {
+            const wallet = Wallet.createFromPrimitives({
                 id : 'id',
-                id_usuario : 'id_usuario',
+                userId : 'userId',
             })
-            expect(carteira.id).toBe('id')
-            expect(carteira.id_usuario).toBe('id_usuario')
+            expect(wallet.id).toBe('id')
+            expect(wallet.userId).toBe('userId')
         })
     })
 })
+
+
+

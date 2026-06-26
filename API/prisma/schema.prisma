@@ -1,70 +1,77 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: npx create-db
-
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model Usuario {
-  id String @id @default(uuid())
-  nome String
-  email String @unique
-  senha_hash String
-  criado_em DateTime @default(now())
-
-  carteira Carteira?
-  metas Metas[]
+enum Category {
+  LEISURE
+  GROCERIES
+  EXPENSES
+  SHOPPING
+  FOOD
 }
 
-model Carteira {
-  id String @id @default(uuid())
-  id_usuario String @unique
-  transacao Transacao[]
-
-  usuario Usuario @relation(fields: [id_usuario], references: [id])
+enum TransactionType {
+  DEBIT
+  CREDIT
 }
 
-model Transacao {
-  id String @id @default(uuid())
-  carteira_id String
-  nome String
-  categoria String
-  valor Decimal
-  tipo_transacao String
-  criado_em DateTime @default(now())
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
 
-  carteira Carteira @relation(fields: [carteira_id], references: [id])
-  @@index([carteira_id])
-  @@index([criado_em])
+  wallet Wallet?
+  goals  Goal[]
 }
 
-model Metas {
-  id String @id @default(uuid())
-  id_usuario String
-  nome String
-  descricao String
-  valor_total Decimal
-  valor_guardado Decimal @default(0)
-  criado_em DateTime @default(now())
+model Wallet {
+  id     String @id @default(uuid())
+  userId String @unique
 
-  usuario Usuario @relation(fields: [id_usuario], references: [id])
-  @@index([id_usuario])
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
 }
 
-model LogAuditoria {
-  id          String   @id @default(uuid())
-  evento      String
-  id_usuario  String
-  id_entidade String
-  dados       Json
-  criado_em   DateTime @default(now())
+model Transaction {
+  id              String          @id @default(uuid())
+  walletId        String
+  name            String
+  category        Category
+  amount          Decimal         @db.Decimal(14, 2)
+  transactionType TransactionType
+  createdAt       DateTime        @default(now())
 
-  @@map("logs_auditoria")
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
+  @@index([walletId])
+  @@index([createdAt])
+}
+
+model Goal {
+  id           String   @id @default(uuid())
+  userId       String
+  name         String
+  description  String
+  targetAmount Decimal  @db.Decimal(14, 2)
+  savedAmount  Decimal  @default(0) @db.Decimal(14, 2)
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  event     String
+  userId    String
+  entityId  String
+  data      Json
+  createdAt DateTime @default(now())
 }

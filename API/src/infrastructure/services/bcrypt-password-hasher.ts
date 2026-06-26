@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+﻿import bcrypt from 'bcryptjs';
 import { PasswordHasher } from '../../domain/services/password-hasher';
 
 export class BcryptPasswordHasher implements PasswordHasher {
@@ -16,3 +16,4 @@ export class BcryptPasswordHasher implements PasswordHasher {
         return await bcrypt.compare(password, hash);
     }
 }
+

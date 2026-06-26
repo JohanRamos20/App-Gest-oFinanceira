@@ -1,4 +1,4 @@
 export interface Event {
-    readonly nome : string,
-    readonly ocorreuEm: Date,
+    readonly name: string;
+    readonly occurredAt: Date;
 }

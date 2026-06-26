@@ -1,4 +1,4 @@
-export class BusinessError extends Error{
+﻿export class BusinessError extends Error{
     public readonly statusCode : number
     constructor(message: string, statusCode = 400) {
         super(message)
@@ -6,3 +6,4 @@ export class BusinessError extends Error{
         this.name = "BusinessError"
     }
 }
+
